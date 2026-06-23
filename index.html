@@ -19,28 +19,29 @@
 
     <style>
         /* ================================================================
-           ROOT VARIABLES
+           ROOT VARIABLES — DIPERBAIKI AGAR LEBIH TRANSPARAN
            ================================================================ */
         :root {
-            --glass-bg: rgba(240, 240, 245, 0.75);
-            --glass-border: rgba(0, 0, 0, 0.08);
-            --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            --glass-blur: 20px;
+            /* Light mode: lebih transparan dari sebelumnya (0.75 → 0.35) */
+            --glass-bg: rgba(180, 180, 145, 0.35);
+            --glass-border: rgba(0, 0, 0, 0.10);
+            --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            --glass-blur: 28px; /* blur lebih besar */
             --label: #1c1c1e;
-            --label2: rgba(60, 60, 67, 0.7);
-            --label3: rgba(60, 60, 67, 0.40);
+            --label2: rgba(60, 60, 67, 0.75);
+            --label3: rgba(60, 60, 67, 0.45);
             --tint: #007AFF;
             --green: #34C759;
             --red: #FF3B30;
             --orange: #FF9500;
-            --separator: rgba(60, 60, 67, 0.18);
-            --nav-bg: rgba(255, 255, 255, 0.50);
+            --separator: rgba(60, 60, 67, 0.20);
+            --nav-bg: rgba(180, 180, 180, 0.35);
             --nav-blur: blur(32px) saturate(180%);
             --radius-sm: 10px;
             --radius-md: 14px;
             --radius-lg: 18px;
             --radius-xl: 14px;
-            --bg-calendar: rgba(255, 255, 255, 0.92);
+            --bg-calendar: rgba(255, 255, 255, 0.85);
             --text-calendar: #1c1c1e;
             --cell-hover: rgba(0, 122, 255, 0.12);
             --cell-selected: #007AFF;
@@ -48,21 +49,22 @@
         }
 
         [data-theme="dark"] {
-            --glass-bg: rgba(36, 36, 36, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            /* Dark mode: lebih transparan dari sebelumnya (0.75 → 0.22) */
+            --glass-bg: rgba(20, 20, 28, 0.30);
+            --glass-border: rgba(255, 255, 255, 0.10);
+            --glass-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             --label: #f5f5f7;
-            --label2: rgba(235, 235, 245, 0.55);
-            --label3: rgba(235, 235, 245, 0.30);
+            --label2: rgba(235, 235, 245, 0.60);
+            --label3: rgba(235, 235, 245, 0.35);
             --tint: #0A84FF;
             --green: #30D158;
             --red: #FF453A;
             --orange: #FF9F0A;
-            --separator: rgba(84, 84, 88, 0.40);
-            --nav-bg: rgba(28, 28, 30, 0.55);
-            --bg-calendar: rgba(30, 30, 34, 0.95);
+            --separator: rgba(84, 84, 88, 0.45);
+            --nav-bg: rgba(20, 20, 28, 0.35);
+            --bg-calendar: rgba(30, 30, 34, 0.90);
             --text-calendar: #f5f5f7;
-            --cell-hover: rgba(10, 132, 255, 0.20);
+            --cell-hover: rgba(10, 132, 255, 0.25);
             --cell-selected: #0A84FF;
             --cell-selected-text: #fff;
         }
@@ -104,7 +106,7 @@
         }
 
         /* ================================================================
-           GLASSMORPHISM COMPONENTS
+           GLASSMORPHISM COMPONENTS — LEBIH TRANSPARAN + BLUR LEBIH BESAR
            ================================================================ */
         .glass, .ios-group, .item-card {
             background: var(--glass-bg);
@@ -120,6 +122,11 @@
 
         .item-card:hover {
             transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.04); /* subtle hover highlight */
+        }
+
+        [data-theme="dark"] .item-card:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .nav-bar {
@@ -145,35 +152,38 @@
             margin-bottom: 10px;
         }
 
+        /* ================================================================
+           SIGNATURE PAD — TRANSPARAN BACKGROUND
+           ================================================================ */
         .sig-pad-wrapper {
             position: relative;
             border-radius: var(--radius-md);
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px dashed var(--separator);
             overflow: hidden;
             touch-action: none;
             cursor: crosshair;
-            height: 100px;
+            height: 180px;
             width: 100%;
             transition: border-color 0.2s, background 0.2s;
         }
 
         [data-theme="dark"] .sig-pad-wrapper {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .sig-pad-wrapper:focus-within,
         .sig-pad-wrapper.signed {
             border-style: solid;
             border-color: var(--green);
-            background: rgba(52, 199, 89, 0.08);
+            background: rgba(52, 199, 89, 0.10);
         }
 
         [data-theme="dark"] .sig-pad-wrapper:focus-within,
         [data-theme="dark"] .sig-pad-wrapper.signed {
-            background: rgba(48, 209, 88, 0.10);
+            background: rgba(48, 209, 88, 0.12);
         }
 
         /* ================================================================
@@ -203,7 +213,7 @@
         }
         
         .custom-date-trigger:hover {
-            background: rgba(128, 128, 128, 0.1);
+            background: rgba(128, 128, 128, 0.10);
         }
         
         .date-text {
@@ -228,11 +238,11 @@
             position: fixed;
             z-index: 1000;
             background: var(--bg-calendar);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
             width: 320px;
             padding: 16px;
             display: none;
@@ -261,7 +271,7 @@
         }
         
         .cal-nav button {
-            background: rgba(128, 128, 128, 0.1);
+            background: rgba(128, 128, 128, 0.10);
             border: none;
             width: 32px;
             height: 32px;
@@ -276,7 +286,7 @@
         }
         
         .cal-nav button:hover {
-            background: rgba(128, 128, 128, 0.2);
+            background: rgba(128, 128, 128, 0.20);
         }
         
         .cal-weekdays {
@@ -333,7 +343,7 @@
         
         .cal-day.empty {
             pointer-events: none;
-            opacity: 0.3;
+            opacity: 0.25;
         }
         
         .cal-footer {
@@ -356,7 +366,7 @@
         }
         
         .cal-footer button:hover {
-            background: rgba(128, 128, 128, 0.1);
+            background: rgba(128, 128, 128, 0.10);
         }
         
         /* CUSTOM SELECT STYLES */
@@ -385,7 +395,7 @@
         }
         
         .custom-select-trigger:hover {
-            background: rgba(128, 128, 128, 0.1);
+            background: rgba(128, 128, 128, 0.10);
         }
         
         .sel-text {
@@ -406,11 +416,11 @@
             position: fixed;
             z-index: 1000;
             background: var(--bg-calendar);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
             display: none;
             overflow: hidden;
             max-height: 280px;
@@ -561,14 +571,14 @@
         .btn-section { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .sig-clear-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; border: none; font-size: 11px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 5; touch-action: manipulation; transition: transform 0.15s; }
+        .sig-clear-btn { position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%; background: var(--red); color: #fff; border: none; font-size: 12px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 5; touch-action: manipulation; transition: transform 0.15s; }
         .sig-pad-wrapper.signed .sig-clear-btn { display: flex; }
         .sig-clear-btn:active { transform: scale(0.85); }
         .voice-target { outline: 2px solid var(--tint); outline-offset: 2px; border-radius: 4px; }
 
         #form-error { background: var(--red); color: #fff; padding: 13px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; text-align: center; margin-top: 12px; display: none; line-height: 1.4; }
         #form-error.show { display: block; }
-        .scanner-controls button { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: #fff; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 50px; cursor: pointer; font-family: inherit; }
+        .scanner-controls button { background: rgba(255, 255, 255, 0.10); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: #fff; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 50px; cursor: pointer; font-family: inherit; }
 
         /* RECEIPT PREVIEW (PRINT) */
         #receipt-wrapper { position: fixed; top: -9999px; left: -9999px; opacity: 0; pointer-events: none; width: 800px; }
@@ -587,12 +597,12 @@
         #receipt-preview table.sig-table { width: 100%; border-collapse: collapse; }
         #receipt-preview table.sig-table th, #receipt-preview table.sig-table td { border: 1px solid #000000; color: #000000; }
         #receipt-preview table.sig-table th { font-weight: normal; padding: 5px; text-align: center; }
-        #receipt-preview table.sig-table td { height: 220px; vertical-align: bottom; padding: 15px; position: relative; }
+        #receipt-preview table.sig-table td { height: 260px; vertical-align: bottom; padding: 15px; position: relative; }
         #receipt-preview .sig-details { margin-top: 120px; }
         #receipt-preview .sig-row { display: flex; margin-bottom: 3px; }
         #receipt-preview .sig-row .s-lbl { width: 80px; }
         #receipt-preview .sig-row .s-colon { width: 15px; }
-        #receipt-preview .sig-image { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); max-height: 130px; width: auto; max-width: 90%; object-fit: contain; }
+        #receipt-preview .sig-image { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); max-height: 160px; width: auto; max-width: 90%; object-fit: contain; }
 
         @media print {
             body * { visibility: hidden; }
@@ -786,7 +796,7 @@
                         <div class="sig-name-label" style="font-size:11px;font-weight:600;color:var(--label2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Diserahkan Oleh</div>
                         <div class="sig-pad-wrapper" id="sig-given-wrapper">
                             <div class="sig-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--label3);pointer-events:none;gap:6px;">✍️ Tanda tangan di sini</div>
-                            <canvas id="sig-given" width="400" height="100"></canvas>
+                            <canvas id="sig-given" width="400" height="180"></canvas>
                             <button type="button" class="sig-clear-btn" onclick="clearSignature('given')">✕</button>
                         </div>
                     </div>
@@ -794,7 +804,7 @@
                         <div class="sig-name-label" style="font-size:11px;font-weight:600;color:var(--label2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Diterima Oleh</div>
                         <div class="sig-pad-wrapper" id="sig-received-wrapper">
                             <div class="sig-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--label3);pointer-events:none;gap:6px;">✍️ Tanda tangan di sini</div>
-                            <canvas id="sig-received" width="400" height="100"></canvas>
+                            <canvas id="sig-received" width="400" height="180"></canvas>
                             <button type="button" class="sig-clear-btn" onclick="clearSignature('received')">✕</button>
                         </div>
                     </div>
@@ -1482,7 +1492,6 @@
         // ================================================================
         const statusOptions = [
             { value: 'Distribusi', label: 'Distribusi' },
-            { value: 'Perbaikan', label: 'Perbaikan' },
             { value: 'Peminjaman', label: 'Peminjaman' },
             { value: 'Penarikan', label: 'Penarikan' },
             { value: 'Pengembalian', label: 'Pengembalian' },
@@ -1516,7 +1525,7 @@
 
                 const dpr = window.devicePixelRatio || 1;
                 const w = wrapper.clientWidth || 400;
-                const h = Math.max(100, w * 0.25);
+                const h = 180;
                 canvas.width = w * dpr;
                 canvas.height = h * dpr;
                 canvas.style.width = w + 'px';
@@ -1911,7 +1920,7 @@
                     logging: false,
                     onclone: (clonedDoc) => {
                         clonedDoc.querySelectorAll('.sig-image').forEach(img => {
-                            img.style.maxHeight = '130px';
+                            img.style.maxHeight = '160px';
                             img.style.maxWidth = '90%';
                             img.style.objectFit = 'contain';
                             img.style.background = 'transparent';
@@ -2120,7 +2129,7 @@
                     try {
                         children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 200,
                                 after: 200 }, children: [new ImageRun({ type: 'png', data: base64ToUint8Array(
-                                    base64Data), transformation: { width: 250, height: 100 } })] }));
+                                    base64Data), transformation: { width: 250, height: 120 } })] }));
                         imageAdded = true;
                     } catch (e) { console.warn('Gagal embed TTD:', e); }
                 }
