@@ -1,0 +1,2628 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Tanda Terima · Binus Alsut</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+    </script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.umd.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js">
+    </script>
+
+    <style>
+        /* ================================================================
+           ROOT VARIABLES
+           ================================================================ */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.14);
+            --glass-border: rgba(255, 255, 255, 0.20);
+            --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --glass-blur: 24px;
+            --label: #1c1c1e;
+            --label2: rgba(60, 60, 67, 0.7);
+            --label3: rgba(60, 60, 67, 0.40);
+            --tint: #007AFF;
+            --green: #34C759;
+            --red: #FF3B30;
+            --orange: #FF9500;
+            --separator: rgba(60, 60, 67, 0.18);
+            --nav-bg: rgba(255, 255, 255, 0.50);
+            --nav-blur: blur(32px) saturate(180%);
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --radius-xl: 22px;
+            --bg-calendar: rgba(255, 255, 255, 0.92);
+            --text-calendar: #1c1c1e;
+            --cell-hover: rgba(0, 122, 255, 0.12);
+            --cell-selected: #007AFF;
+            --cell-selected-text: #fff;
+        }
+
+        [data-theme="dark"] {
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.10);
+            --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+            --label: #f5f5f7;
+            --label2: rgba(235, 235, 245, 0.55);
+            --label3: rgba(235, 235, 245, 0.30);
+            --tint: #0A84FF;
+            --green: #30D158;
+            --red: #FF453A;
+            --orange: #FF9F0A;
+            --separator: rgba(84, 84, 88, 0.40);
+            --nav-bg: rgba(28, 28, 30, 0.55);
+            --bg-calendar: rgba(30, 30, 34, 0.95);
+            --text-calendar: #f5f5f7;
+            --cell-hover: rgba(10, 132, 255, 0.20);
+            --cell-selected: #0A84FF;
+            --cell-selected-text: #fff;
+        }
+
+        /* ================================================================
+           RESET & BASE
+           ================================================================ */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* -------- MESH GRADIENT BACKGROUND -------- */
+        .mesh-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background: #0b0b12;
+            transition: background 0.5s ease;
+        }
+
+        [data-theme="light"] .mesh-bg {
+            background: #e8ecf4;
+        }
+
+        .mesh-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.60;
+            will-change: transform;
+            animation: meshFloat 18s ease-in-out infinite alternate;
+            mix-blend-mode: normal;
+        }
+
+        [data-theme="light"] .mesh-blob {
+            opacity: 0.50;
+        }
+
+        .mesh-blob:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            top: -8%;
+            left: -6%;
+            background: radial-gradient(circle, #667eea, #764ba2);
+            animation-duration: 22s;
+            animation-delay: -2s;
+        }
+        .mesh-blob:nth-child(2) {
+            width: 420px;
+            height: 420px;
+            bottom: -6%;
+            right: -4%;
+            background: radial-gradient(circle, #f093fb, #f5576c);
+            animation-duration: 26s;
+            animation-delay: -6s;
+        }
+        .mesh-blob:nth-child(3) {
+            width: 380px;
+            height: 380px;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, #4facfe, #00f2fe);
+            animation-duration: 20s;
+            animation-delay: -10s;
+            opacity: 0.35;
+        }
+        .mesh-blob:nth-child(4) {
+            width: 300px;
+            height: 300px;
+            bottom: 20%;
+            left: 8%;
+            background: radial-gradient(circle, #f6d365, #fda085);
+            animation-duration: 24s;
+            animation-delay: -4s;
+            opacity: 0.30;
+        }
+        .mesh-blob:nth-child(5) {
+            width: 350px;
+            height: 350px;
+            top: 10%;
+            right: 6%;
+            background: radial-gradient(circle, #a18cd1, #fbc2eb);
+            animation-duration: 28s;
+            animation-delay: -8s;
+            opacity: 0.30;
+        }
+
+        [data-theme="dark"] .mesh-blob:nth-child(1) {
+            opacity: 0.50;
+        }
+        [data-theme="dark"] .mesh-blob:nth-child(2) {
+            opacity: 0.40;
+        }
+        [data-theme="dark"] .mesh-blob:nth-child(3) {
+            opacity: 0.30;
+        }
+        [data-theme="dark"] .mesh-blob:nth-child(4) {
+            opacity: 0.25;
+        }
+        [data-theme="dark"] .mesh-blob:nth-child(5) {
+            opacity: 0.25;
+        }
+
+        @keyframes meshFloat {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            33% {
+                transform: translate(40px, -30px) scale(1.05) rotate(4deg);
+            }
+            66% {
+                transform: translate(-20px, 40px) scale(0.95) rotate(-3deg);
+            }
+            100% {
+                transform: translate(30px, -20px) scale(1.02) rotate(2deg);
+            }
+        }
+
+        .mesh-grain {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px 256px;
+            opacity: 0.30;
+            mix-blend-mode: overlay;
+        }
+
+        [data-theme="light"] .mesh-grain {
+            opacity: 0.15;
+        }
+
+        /* -------- BODY -------- */
+        body {
+            position: relative;
+            z-index: 2;
+            color: var(--label);
+            min-height: 100vh;
+            min-height: 100dvh;
+            transition: color 0.3s ease;
+        }
+
+        /* ================================================================
+           GLASSMORPHISM COMPONENTS
+           ================================================================ */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: var(--radius-xl);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ios-group {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin-bottom: 10px;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .item-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin-bottom: 10px;
+            transition: opacity 0.2s, transform 0.2s, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: var(--nav-blur);
+            -webkit-backdrop-filter: var(--nav-blur);
+            border-bottom: 0.5px solid var(--glass-border);
+            padding: env(safe-area-inset-top, 0) 0 0;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        #scanner-container {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 10px;
+        }
+
+        .sig-pad-wrapper {
+            position: relative;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1.5px dashed var(--separator);
+            overflow: hidden;
+            touch-action: none;
+            cursor: crosshair;
+            height: 100px;
+            width: 100%;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        [data-theme="dark"] .sig-pad-wrapper {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .sig-pad-wrapper:focus-within,
+        .sig-pad-wrapper.signed {
+            border-style: solid;
+            border-color: var(--green);
+            background: rgba(52, 199, 89, 0.08);
+        }
+
+        [data-theme="dark"] .sig-pad-wrapper:focus-within,
+        [data-theme="dark"] .sig-pad-wrapper.signed {
+            background: rgba(48, 209, 88, 0.10);
+        }
+
+        /* ================================================================
+           NAV BUTTONS
+           ================================================================ */
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            height: 32px;
+            padding: 0 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--tint);
+            cursor: pointer;
+            transition: opacity 0.15s, background 0.15s, transform 0.1s;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .nav-btn:active {
+            opacity: 0.6;
+            transform: scale(0.94);
+        }
+
+        .theme-pill {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 56px;
+            height: 32px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            padding: 2px;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+
+        .theme-pill-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.70);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        [data-theme="dark"] .theme-pill-thumb {
+            transform: translateX(24px);
+            background: rgba(40, 40, 44, 0.80);
+        }
+
+        .theme-pill-icons {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 6px;
+            font-size: 12px;
+            pointer-events: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================================================================
+           FLOATING MIC
+           ================================================================ */
+        #global-mic-btn {
+            position: fixed;
+            bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+            right: 20px;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            color: var(--label);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            transition: background 0.2s, border-color 0.2s, transform 0.1s, box-shadow 0.2s;
+            touch-action: manipulation;
+        }
+
+        #global-mic-btn:active {
+            transform: scale(0.92);
+        }
+        #global-mic-btn.mic-active {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+            animation: mic-pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes mic-pulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.35), var(--glass-shadow);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(255, 59, 48, 0), var(--glass-shadow);
+            }
+        }
+
+        body.no-speech-support #global-mic-btn {
+            display: none;
+        }
+
+        /* ================================================================
+           CUSTOM DATE PICKER – iOS GLASS STYLE
+           ================================================================ */
+        .custom-date-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--label);
+            outline: none;
+            padding: 0;
+            cursor: pointer;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .custom-date-trigger .date-text {
+            color: var(--label);
+        }
+        .custom-date-trigger .date-text.placeholder {
+            color: var(--label3);
+        }
+        .custom-date-trigger .date-arrow {
+            font-size: 12px;
+            color: var(--label2);
+            transition: transform 0.25s;
+        }
+        .custom-date-trigger .date-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        /* Calendar popup – glass + blur */
+        .calendar-popup {
+            position: fixed;
+            z-index: 500;
+            background: var(--bg-calendar);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border: 0.5px solid var(--glass-border);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.30), var(--glass-shadow);
+            border-radius: var(--radius-xl);
+            padding: 18px 20px 16px;
+            min-width: 290px;
+            width: 320px;
+            max-width: calc(100vw - 32px);
+            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: scale(0.92) translateY(8px);
+            pointer-events: none;
+            color: var(--text-calendar);
+        }
+
+        .calendar-popup.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        .calendar-popup .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 0.5px solid var(--separator);
+        }
+
+        .calendar-popup .cal-month-year {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-calendar);
+            letter-spacing: -0.2px;
+        }
+
+        .calendar-popup .cal-nav {
+            display: flex;
+            gap: 2px;
+        }
+
+        .calendar-popup .cal-nav button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-calendar);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+
+        .calendar-popup .cal-nav button:hover {
+            background: var(--cell-hover);
+        }
+        .calendar-popup .cal-nav button:active {
+            transform: scale(0.92);
+        }
+
+        .calendar-popup .cal-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label2);
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .calendar-popup .cal-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-popup .cal-day {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            color: var(--text-calendar);
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            width: 100%;
+            padding: 0;
+        }
+
+        .calendar-popup .cal-day:hover:not(.empty) {
+            background: var(--cell-hover);
+        }
+
+        .calendar-popup .cal-day.empty {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .calendar-popup .cal-day.other-month {
+            opacity: 0.35;
+        }
+
+        .calendar-popup .cal-day.today {
+            font-weight: 600;
+            color: var(--tint);
+        }
+
+        .calendar-popup .cal-day.selected {
+            background: var(--cell-selected);
+            color: var(--cell-selected-text);
+            font-weight: 600;
+        }
+
+        .calendar-popup .cal-day.selected:hover {
+            background: var(--cell-selected);
+        }
+
+        .calendar-popup .cal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 0.5px solid var(--separator);
+        }
+
+        .calendar-popup .cal-footer button {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--tint);
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 50px;
+            transition: background 0.15s;
+            font-family: inherit;
+        }
+
+        .calendar-popup .cal-footer button:hover {
+            background: var(--cell-hover);
+        }
+        .calendar-popup .cal-footer button:active {
+            transform: scale(0.94);
+        }
+
+        .calendar-popup .cal-footer .cal-clear {
+            color: var(--red);
+        }
+
+        /* ================================================================
+           CUSTOM SELECT – iOS GLASS STYLE (FIXED)
+           ================================================================ */
+        .custom-select-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--label);
+            outline: none;
+            width: 100%;
+            padding: 0;
+            cursor: pointer;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .custom-select-trigger .sel-text {
+            color: var(--label);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .custom-select-trigger .sel-text.placeholder {
+            color: var(--label3);
+        }
+        .custom-select-trigger .sel-arrow {
+            font-size: 10px;
+            color: var(--label2);
+            flex-shrink: 0;
+            transition: transform 0.25s;
+        }
+        .custom-select-trigger .sel-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        /* Dropdown panel – glass */
+        .select-dropdown {
+            position: fixed;
+            z-index: 400;
+            background: var(--bg-calendar);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border: 0.5px solid var(--glass-border);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.25), var(--glass-shadow);
+            border-radius: var(--radius-md);
+            padding: 4px 0;
+            min-width: 140px;
+            max-width: 260px;
+            max-height: 240px;
+            overflow-y: auto;
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            transform: scale(0.92) translateY(6px);
+            pointer-events: none;
+            color: var(--text-calendar);
+            overscroll-behavior: contain;
+        }
+
+        .select-dropdown.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        .select-dropdown .sel-option {
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-calendar);
+            cursor: pointer;
+            transition: background 0.12s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        .select-dropdown .sel-option:hover {
+            background: var(--cell-hover);
+        }
+        .select-dropdown .sel-option:active {
+            transform: scale(0.97);
+        }
+        .select-dropdown .sel-option.selected {
+            background: var(--cell-selected);
+            color: var(--cell-selected-text);
+        }
+
+        .select-dropdown::-webkit-scrollbar {
+            width: 4px;
+        }
+        .select-dropdown::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .select-dropdown::-webkit-scrollbar-thumb {
+            background: var(--separator);
+            border-radius: 4px;
+        }
+
+        /* ================================================================
+           IOS ROWS & TYPOGRAPHY
+           ================================================================ */
+        .ios-row {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            min-height: 52px;
+            gap: 12px;
+            position: relative;
+        }
+        .ios-row:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 16px;
+            right: 0;
+            height: 0.5px;
+            background: var(--separator);
+        }
+
+        .ios-row-label {
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--label);
+            flex-shrink: 0;
+            min-width: 0;
+        }
+        .ios-row-label.small {
+            font-size: 15px;
+        }
+
+        .ios-row-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--label);
+            text-align: right;
+            outline: none;
+            min-width: 0;
+            padding: 0;
+        }
+        .ios-row-input::placeholder {
+            color: var(--label3);
+        }
+        .ios-row-input:focus {
+            color: var(--label);
+        }
+
+        .ios-stacked-label-sm {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--label2);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .ios-stacked-input-sm {
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--label);
+            outline: none;
+            width: 100%;
+            padding: 0;
+        }
+        .ios-stacked-input-sm::placeholder {
+            color: var(--label3);
+        }
+
+        .item-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--label2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ================================================================
+           SCROLL AREA
+           ================================================================ */
+        .scroll-area {
+            position: relative;
+            z-index: 2;
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 24px 16px env(safe-area-inset-bottom, 32px);
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px);
+        }
+
+        .section-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--label2);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 0 16px 6px;
+        }
+
+        /* ================================================================
+           SEPARATORS
+           ================================================================ */
+        .ios-row:not(:last-child)::after,
+        .ios-stacked-row:not(:last-child)::after,
+        .item-card-header {
+            border-color: var(--separator) !important;
+        }
+
+        .item-field-cell:not(.no-border-right):nth-child(odd)::after,
+        .item-field-cell:not(:last-child):not(:nth-last-child(2).even-last)::before {
+            background: var(--separator);
+        }
+
+        /* ================================================================
+           ACTION BUTTONS
+           ================================================================ */
+        .card-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 0.5px solid rgba(255, 255, 255, 0.10);
+            border-radius: 50px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--tint);
+            cursor: pointer;
+            transition: opacity 0.15s, background 0.15s, transform 0.1s;
+        }
+        .card-action-btn:active {
+            opacity: 0.6;
+            transform: scale(0.94);
+        }
+
+        .ios-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 0;
+            height: 54px;
+            border-radius: var(--radius-xl);
+            border: 0.5px solid var(--glass-border);
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: -0.2px;
+            transition: opacity 0.15s, transform 0.1s, background 0.2s, box-shadow 0.2s;
+        }
+        .ios-btn:active {
+            transform: scale(0.97);
+            opacity: 0.75;
+        }
+        .ios-btn:disabled {
+            opacity: 0.38;
+            pointer-events: none;
+        }
+
+        .btn-primary {
+            background: var(--tint);
+            color: #fff;
+            border-color: var(--tint);
+            box-shadow: 0 4px 24px rgba(0, 122, 255, 0.30);
+        }
+
+        [data-theme="dark"] .btn-primary {
+            box-shadow: 0 4px 24px rgba(10, 132, 255, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            color: var(--tint);
+            border-color: var(--glass-border);
+        }
+
+        .btn-section {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .item-remove-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--red);
+            color: white;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s, opacity 0.15s;
+            flex-shrink: 0;
+        }
+        .item-remove-btn:active {
+            transform: scale(0.88);
+            opacity: 0.7;
+        }
+
+        .sig-clear-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--red);
+            color: #fff;
+            border: none;
+            font-size: 11px;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            touch-action: manipulation;
+            transition: transform 0.15s;
+        }
+        .sig-pad-wrapper.signed .sig-clear-btn {
+            display: flex;
+        }
+        .sig-clear-btn:active {
+            transform: scale(0.85);
+        }
+
+        .voice-target {
+            outline: 2px solid var(--tint);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        #form-error {
+            background: var(--red);
+            color: #fff;
+            padding: 13px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+            line-height: 1.4;
+        }
+        #form-error.show {
+            display: block;
+        }
+
+        .scanner-controls button {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 0.5px solid rgba(255, 255, 255, 0.10);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* ================================================================
+           RECEIPT PREVIEW
+           ================================================================ */
+        #receipt-wrapper {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+            width: 800px;
+        }
+        #receipt-preview {
+            background: #FFFFFF;
+            color: #000000;
+            padding: 40px;
+            font-family: Arial, Helvetica, sans-serif;
+            max-width: 800px;
+            min-height: 1131px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            font-size: 13px;
+            width: 100%;
+        }
+        #receipt-preview .receipt-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: underline;
+            text-transform: uppercase;
+            color: #000000;
+            margin-bottom: 30px;
+        }
+        #receipt-preview .receipt-header-info {
+            margin-bottom: 15px;
+        }
+        #receipt-preview .info-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        #receipt-preview .info-row .lbl {
+            width: 150px;
+            text-transform: uppercase;
+        }
+        #receipt-preview .info-row .colon {
+            width: 20px;
+            text-align: left;
+        }
+        #receipt-preview .info-row .val {
+            flex: 1;
+            text-transform: uppercase;
+        }
+        #receipt-preview table.main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        #receipt-preview table.main-table th,
+        #receipt-preview table.main-table td {
+            border: 1px solid #000000;
+            padding: 8px;
+            color: #000000;
+        }
+        #receipt-preview table.main-table th {
+            background: #FFFFFF;
+            font-weight: normal;
+            text-align: center;
+        }
+        #receipt-preview table.main-table td {
+            text-align: center;
+            vertical-align: top;
+        }
+        #receipt-preview table.main-table td:first-child,
+        #receipt-preview table.main-table td:nth-child(2) {
+            text-align: left;
+        }
+        #receipt-preview table.sig-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #receipt-preview table.sig-table th,
+        #receipt-preview table.sig-table td {
+            border: 1px solid #000000;
+            color: #000000;
+        }
+        #receipt-preview table.sig-table th {
+            font-weight: normal;
+            padding: 5px;
+            text-align: center;
+        }
+        #receipt-preview table.sig-table td {
+            height: 220px;
+            vertical-align: bottom;
+            padding: 15px;
+            position: relative;
+        }
+        #receipt-preview .sig-details {
+            margin-top: 120px;
+        }
+        #receipt-preview .sig-row {
+            display: flex;
+            margin-bottom: 3px;
+        }
+        #receipt-preview .sig-row .s-lbl {
+            width: 80px;
+        }
+        #receipt-preview .sig-row .s-colon {
+            width: 15px;
+        }
+        #receipt-preview .sig-image {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-height: 130px;
+            width: auto;
+            max-width: 90%;
+            object-fit: contain;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #receipt-preview,
+            #receipt-preview * {
+                visibility: visible;
+            }
+            #receipt-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                background: #fff;
+                color: #000;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        /* item grid */
+        .item-fields-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .item-field-cell {
+            padding: 12px 16px;
+            position: relative;
+        }
+        .item-field-cell:not(.no-border-right):nth-child(odd)::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 0.5px;
+            background: var(--separator);
+        }
+        .item-field-cell:not(:last-child):not(:nth-last-child(2).even-last)::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0.5px;
+            background: var(--separator);
+        }
+        .item-field-cell.full {
+            grid-column: 1 / -1;
+        }
+        .item-field-cell.full::after {
+            display: none;
+        }
+
+        .item-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 0.5px solid var(--separator);
+        }
+
+        /* ================================================================
+           RESPONSIVE
+           ================================================================ */
+        @media (max-width: 400px) {
+            .calendar-popup {
+                width: 290px;
+                padding: 14px 14px 12px;
+            }
+            .calendar-popup .cal-day {
+                font-size: 13px;
+            }
+            .select-dropdown {
+                min-width: 120px;
+                max-width: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MESH GRADIENT BACKGROUND ===== -->
+    <div class="mesh-bg" aria-hidden="true">
+        <div class="mesh-blob"></div>
+        <div class="mesh-blob"></div>
+        <div class="mesh-blob"></div>
+        <div class="mesh-blob"></div>
+        <div class="mesh-blob"></div>
+        <div class="mesh-grain"></div>
+    </div>
+
+    <!-- ===== NAV BAR ===== -->
+    <nav class="nav-bar no-print">
+        <div class="nav-inner" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:430px;margin:0 auto;min-height:52px;">
+            <div class="nav-title-block" style="display:flex;flex-direction:column;gap:1px;">
+                <span class="nav-eyebrow" style="font-size:11px;font-weight:500;color:var(--label2);letter-spacing:0.4px;text-transform:uppercase;">Binus Alsut</span>
+                <span class="nav-title" style="font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--label);">Tanda Terima</span>
+            </div>
+            <div class="nav-actions" style="display:flex;align-items:center;gap:8px;">
+                <button onclick="toggleTheme()" class="theme-pill" id="theme-toggle" title="Toggle tema">
+                    <span class="theme-pill-thumb" id="theme-thumb">🌙</span>
+                    <span class="theme-pill-icons"><span>☀️</span><span></span></span>
+                </button>
+                <button onclick="resetForm()" class="nav-btn nav-btn-icon" title="Reset form" style="width:32px;padding:0;font-size:15px;color:var(--label2);">
+                    ↺
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SCROLL AREA ===== -->
+    <div class="scroll-area">
+        <form id="receipt-form" onsubmit="generateReceipt(event)">
+
+            <!-- IDENTITAS -->
+            <p class="section-header">Identitas</p>
+            <div class="ios-group">
+                <div class="ios-row">
+                    <span class="ios-row-label small">Diberikan Oleh</span>
+                    <input type="text" id="given-by" data-voice-mode="spaced" class="ios-row-input" placeholder="Nama Lengkap" required />
+                </div>
+                <div class="ios-row">
+                    <span class="ios-row-label small">Binusian ID</span>
+                    <input type="text" id="given-id" data-voice-mode="compact" class="ios-row-input" placeholder="BN123456" />
+                </div>
+                <div class="ios-row">
+                    <span class="ios-row-label small">Diterima Oleh</span>
+                    <input type="text" id="received-by" data-voice-mode="spaced" class="ios-row-input" placeholder="Nama Lengkap" required />
+                </div>
+                <div class="ios-row">
+                    <span class="ios-row-label small">Binusian ID</span>
+                    <input type="text" id="received-id" data-voice-mode="compact" class="ios-row-input" placeholder="BN123456" />
+                </div>
+                <div class="ios-row">
+                    <span class="ios-row-label small">Tanggal</span>
+                    <div class="custom-date-wrap" style="flex:1;display:flex;justify-content:flex-end;">
+                        <button type="button" class="custom-date-trigger" id="date-trigger" aria-label="Pilih tanggal">
+                            <span class="date-text placeholder" id="date-display">Pilih Tanggal</span>
+                            <span class="date-arrow" id="date-arrow">⌵</span>
+                        </button>
+                    </div>
+                    <input type="hidden" id="receipt-date" value="" />
+                </div>
+            </div>
+
+            <!-- DAFTAR BARANG -->
+            <p class="section-header" style="margin-top:8px;">Daftar Barang</p>
+            <div id="items-container"></div>
+
+            <!-- Add / Scan -->
+            <div class="ios-group" style="margin-bottom:8px;">
+                <div class="card-action-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;">
+                    <span class="card-action-label" style="font-size:15px;font-weight:500;color:var(--label);">Tambah Barang</span>
+                    <div class="card-action-btns" style="display:flex;gap:8px;">
+                        <button type="button" onclick="startScanner()" class="card-action-btn">📸 Scan</button>
+                        <button type="button" onclick="addItemRow()" class="card-action-btn">＋ Tambah</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCANNER -->
+            <div id="scanner-container" class="hidden" style="border-radius:var(--radius-xl);overflow:hidden;margin-bottom:10px;">
+                <div class="scanner-controls" style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,0,0,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);">
+                    <button type="button" id="switch-camera-btn" onclick="switchCamera()" style="display:none;">🔄 Ganti Kamera</button>
+                    <button type="button" onclick="stopScanner()">✕ Tutup</button>
+                </div>
+                <div id="reader" style="width:100%;min-height:250px;"></div>
+            </div>
+
+            <!-- TANDA TANGAN -->
+            <p class="section-header" style="margin-top:8px;">Tanda Tangan</p>
+            <div class="ios-group">
+                <div class="sig-block" style="padding:16px 16px 14px;border-bottom:0.5px solid var(--separator);">
+                    <div class="sig-name-label" style="font-size:11px;font-weight:600;color:var(--label2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Diserahkan Oleh</div>
+                    <div class="sig-pad-wrapper" id="sig-given-wrapper">
+                        <div class="sig-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--label3);pointer-events:none;gap:6px;">✍️ Tanda tangan di sini</div>
+                        <canvas id="sig-given" width="400" height="100"></canvas>
+                        <button type="button" class="sig-clear-btn" onclick="clearSignature('given')">✕</button>
+                    </div>
+                </div>
+                <div class="sig-block" style="padding:16px 16px 14px;">
+                    <div class="sig-name-label" style="font-size:11px;font-weight:600;color:var(--label2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Diterima Oleh</div>
+                    <div class="sig-pad-wrapper" id="sig-received-wrapper">
+                        <div class="sig-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--label3);pointer-events:none;gap:6px;">✍️ Tanda tangan di sini</div>
+                        <canvas id="sig-received" width="400" height="100"></canvas>
+                        <button type="button" class="sig-clear-btn" onclick="clearSignature('received')">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ERROR -->
+            <div id="form-error"></div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="btn-section">
+                <button type="submit" id="generate-btn" class="ios-btn btn-primary">
+                    <span id="gen-btn-text">Generate Tanda Terima</span>
+                </button>
+                <div class="btn-row">
+                    <button type="button" onclick="downloadReceipt()" id="download-btn" class="ios-btn btn-secondary" disabled>⬇ PNG</button>
+                    <button type="button" onclick="downloadDocx()" id="download-docx-btn" class="ios-btn btn-secondary" disabled>📄 DOCX</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ===== HIDDEN RECEIPT ===== -->
+    <div id="receipt-wrapper">
+        <div id="receipt-preview"></div>
+    </div>
+
+    <!-- ===== FLOATING MIC ===== -->
+    <button type="button" id="global-mic-btn" title="Voice input — tap field dulu">🎤</button>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT                                                   -->
+    <!-- ============================================================ -->
+    <script>
+        // ================================================================
+        // THEME
+        // ================================================================
+        let currentLang = 'id';
+
+        function updateThemeUI() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const thumb = document.getElementById('theme-thumb');
+            if (thumb) thumb.textContent = isDark ? '🌙' : '☀️';
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = (html.getAttribute('data-theme') || 'dark') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            html.style.colorScheme = newTheme;
+            localStorage.setItem('binus_theme', newTheme);
+            updateThemeUI();
+        }
+
+        // ================================================================
+        // CUSTOM DATE PICKER – iOS Glass Style
+        // ================================================================
+        let datePickerInstance = null;
+
+        function createDatePicker() {
+            const trigger = document.getElementById('date-trigger');
+            const display = document.getElementById('date-display');
+            const hidden = document.getElementById('receipt-date');
+            const arrow = document.getElementById('date-arrow');
+
+            const popup = document.createElement('div');
+            popup.className = 'calendar-popup';
+            popup.id = 'calendar-popup';
+            document.body.appendChild(popup);
+
+            let selectedDate = null;
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+            let isOpen = false;
+
+            function formatDateDisplay(date) {
+                if (!date) return 'Pilih Tanggal';
+                const d = new Date(date);
+                return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            }
+
+            function formatDateValue(date) {
+                if (!date) return '';
+                const d = new Date(date);
+                const y = d.getFullYear();
+                const m = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return y + '-' + m + '-' + day;
+            }
+
+            function updateDisplay() {
+                if (selectedDate) {
+                    display.textContent = formatDateDisplay(selectedDate);
+                    display.className = 'date-text';
+                    hidden.value = formatDateValue(selectedDate);
+                } else {
+                    display.textContent = 'Pilih Tanggal';
+                    display.className = 'date-text placeholder';
+                    hidden.value = '';
+                }
+                hidden.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            function renderCalendar() {
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+
+                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ];
+                const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+                let html = `
+                        <div class="cal-header">
+                            <span class="cal-month-year">${monthNames[currentMonth]} ${currentYear}</span>
+                            <div class="cal-nav">
+                                <button type="button" data-prev>‹</button>
+                                <button type="button" data-next>›</button>
+                            </div>
+                        </div>
+                        <div class="cal-weekdays">${weekDays.map(d => `<span>${d}</span>`).join('')}</div>
+                        <div class="cal-days">
+                    `;
+
+                for (let i = 0; i < firstDay; i++) {
+                    const prevDay = daysInPrev - firstDay + i + 1;
+                    html += `<button type="button" class="cal-day empty other-month" data-day="${prevDay}" data-month="${currentMonth - 1 < 0 ? 11 : currentMonth - 1}" data-year="${currentMonth - 1 < 0 ? currentYear - 1 : currentYear}">${prevDay}</button>`;
+                }
+
+                const today = new Date();
+                const todayStr = formatDateValue(today);
+                const selectedStr = selectedDate ? formatDateValue(selectedDate) : null;
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateObj = new Date(currentYear, currentMonth, d);
+                    const dateStr = formatDateValue(dateObj);
+                    let cls = 'cal-day';
+                    if (dateStr === todayStr) cls += ' today';
+                    if (dateStr === selectedStr) cls += ' selected';
+                    html += `<button type="button" class="${cls}" data-day="${d}" data-month="${currentMonth}" data-year="${currentYear}">${d}</button>`;
+                }
+
+                const totalCells = firstDay + daysInMonth;
+                const remaining = (7 - (totalCells % 7)) % 7;
+                for (let i = 1; i <= remaining; i++) {
+                    html += `<button type="button" class="cal-day empty other-month" data-day="${i}" data-month="${currentMonth + 1 > 11 ? 0 : currentMonth + 1}" data-year="${currentMonth + 1 > 11 ? currentYear + 1 : currentYear}">${i}</button>`;
+                }
+
+                html += `
+                        </div>
+                        <div class="cal-footer">
+                            <button type="button" class="cal-clear" data-clear>Clear</button>
+                            <button type="button" data-today>Today</button>
+                        </div>
+                    `;
+
+                popup.innerHTML = html;
+
+                popup.querySelectorAll('.cal-day:not(.empty)').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const day = parseInt(this.dataset.day);
+                        const month = parseInt(this.dataset.month);
+                        const year = parseInt(this.dataset.year);
+                        selectedDate = new Date(year, month, day);
+                        updateDisplay();
+                        closeCalendar();
+                    });
+                });
+
+                popup.querySelector('[data-prev]').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (currentMonth === 0) { currentMonth = 11;
+                        currentYear--; } else { currentMonth--; }
+                    renderCalendar();
+                });
+
+                popup.querySelector('[data-next]').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (currentMonth === 11) { currentMonth = 0;
+                        currentYear++; } else { currentMonth++; }
+                    renderCalendar();
+                });
+
+                popup.querySelector('[data-today]').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const today = new Date();
+                    selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                    currentMonth = today.getMonth();
+                    currentYear = today.getFullYear();
+                    updateDisplay();
+                    renderCalendar();
+                    closeCalendar();
+                });
+
+                popup.querySelector('[data-clear]').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    selectedDate = null;
+                    updateDisplay();
+                    renderCalendar();
+                    closeCalendar();
+                });
+            }
+
+            function positionPopup() {
+                const rect = trigger.getBoundingClientRect();
+                const popupRect = popup.getBoundingClientRect();
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+
+                let top = rect.bottom + 8;
+                let left = rect.left + rect.width / 2 - popupRect.width / 2;
+
+                if (left < 16) left = 16;
+                if (left + popupRect.width > vw - 16) left = vw - popupRect.width - 16;
+                if (top + popupRect.height > vh - 16) {
+                    top = rect.top - popupRect.height - 8;
+                }
+                if (top < 16) top = 16;
+
+                popup.style.top = top + 'px';
+                popup.style.left = left + 'px';
+            }
+
+            function openCalendar() {
+                if (isOpen) return;
+                isOpen = true;
+                arrow.classList.add('open');
+                popup.classList.add('visible');
+                if (selectedDate) {
+                    const d = new Date(selectedDate);
+                    currentMonth = d.getMonth();
+                    currentYear = d.getFullYear();
+                } else {
+                    const now = new Date();
+                    currentMonth = now.getMonth();
+                    currentYear = now.getFullYear();
+                }
+                renderCalendar();
+                requestAnimationFrame(() => {
+                    positionPopup();
+                });
+            }
+
+            function closeCalendar() {
+                if (!isOpen) return;
+                isOpen = false;
+                arrow.classList.remove('open');
+                popup.classList.remove('visible');
+            }
+
+            function toggleCalendar() {
+                if (isOpen) closeCalendar();
+                else openCalendar();
+            }
+
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleCalendar();
+            });
+
+            document.addEventListener('click', function(e) {
+                if (isOpen && !popup.contains(e.target) && !trigger.contains(e.target)) {
+                    closeCalendar();
+                }
+            });
+
+            window.addEventListener('scroll', function() {
+                if (isOpen) closeCalendar();
+            }, { passive: true });
+
+            window.addEventListener('resize', function() {
+                if (isOpen) {
+                    requestAnimationFrame(positionPopup);
+                }
+            }, { passive: true });
+
+            // Set initial date to today
+            const now = new Date();
+            selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            currentMonth = now.getMonth();
+            currentYear = now.getFullYear();
+            updateDisplay();
+
+            datePickerInstance = { open: openCalendar, close: closeCalendar, toggle: toggleCalendar };
+        }
+
+        // ================================================================
+        // CUSTOM SELECT – iOS Glass Style (FIXED)
+        // ================================================================
+        function createCustomSelect(selectElement, options) {
+            // If select already has a wrapper, skip (avoid duplication)
+            if (selectElement.parentElement && selectElement.parentElement.classList.contains('custom-select-wrap')) {
+                return;
+            }
+
+            const wrap = document.createElement('div');
+            wrap.className = 'custom-select-wrap';
+
+            const trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'custom-select-trigger';
+
+            // Get current selected option label
+            const currentVal = selectElement.value;
+            const currentOpt = options.find(o => o.value === currentVal);
+            const displayText = currentOpt ? currentOpt.label : (options.length > 0 ? options[0].label : 'Pilih');
+
+            trigger.innerHTML = `
+                    <span class="sel-text">${displayText}</span>
+                    <span class="sel-arrow">⌵</span>
+                `;
+
+            // Replace select with wrapper
+            selectElement.parentNode.replaceChild(wrap, selectElement);
+            wrap.appendChild(trigger);
+            wrap.appendChild(selectElement);
+            selectElement.style.display = 'none';
+
+            // Create dropdown
+            const dropdown = document.createElement('div');
+            dropdown.className = 'select-dropdown';
+            document.body.appendChild(dropdown);
+
+            let isOpen = false;
+
+            function renderOptions() {
+                const currentVal = selectElement.value;
+                dropdown.innerHTML = options.map(opt => `
+                        <button type="button" class="sel-option ${opt.value === currentVal ? 'selected' : ''}" data-value="${opt.value}">
+                            ${opt.label}
+                        </button>
+                    `).join('');
+
+                dropdown.querySelectorAll('.sel-option').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const val = this.dataset.value;
+                        const label = options.find(o => o.value === val)?.label || val;
+                        selectElement.value = val;
+                        trigger.querySelector('.sel-text').textContent = label;
+                        trigger.querySelector('.sel-text').className = 'sel-text';
+                        dropdown.querySelectorAll('.sel-option').forEach(b => b.classList.remove('selected'));
+                        this.classList.add('selected');
+                        closeDropdown();
+                        selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+                });
+            }
+
+            function positionDropdown() {
+                const rect = trigger.getBoundingClientRect();
+                const ddRect = dropdown.getBoundingClientRect();
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+
+                let top = rect.bottom + 6;
+                let left = rect.left;
+
+                if (left + ddRect.width > vw - 12) left = vw - ddRect.width - 12;
+                if (left < 12) left = 12;
+                if (top + ddRect.height > vh - 12) {
+                    top = rect.top - ddRect.height - 6;
+                }
+                if (top < 12) top = 12;
+
+                dropdown.style.top = top + 'px';
+                dropdown.style.left = left + 'px';
+                dropdown.style.minWidth = Math.min(rect.width, 260) + 'px';
+            }
+
+            function openDropdown() {
+                if (isOpen) return;
+                isOpen = true;
+                trigger.querySelector('.sel-arrow').classList.add('open');
+                renderOptions();
+                dropdown.classList.add('visible');
+                requestAnimationFrame(() => {
+                    positionDropdown();
+                });
+            }
+
+            function closeDropdown() {
+                if (!isOpen) return;
+                isOpen = false;
+                trigger.querySelector('.sel-arrow').classList.remove('open');
+                dropdown.classList.remove('visible');
+            }
+
+            function toggleDropdown() {
+                if (isOpen) closeDropdown();
+                else openDropdown();
+            }
+
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleDropdown();
+            });
+
+            document.addEventListener('click', function(e) {
+                if (isOpen && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            window.addEventListener('scroll', function() {
+                if (isOpen) closeDropdown();
+            }, { passive: true });
+
+            window.addEventListener('resize', function() {
+                if (isOpen) {
+                    requestAnimationFrame(positionDropdown);
+                }
+            }, { passive: true });
+
+            // Sync trigger when select changes externally
+            selectElement.addEventListener('change', function() {
+                const val = this.value;
+                const label = options.find(o => o.value === val)?.label || val;
+                trigger.querySelector('.sel-text').textContent = label;
+                trigger.querySelector('.sel-text').className = 'sel-text';
+                // Also update dropdown selection if open
+                if (isOpen) {
+                    dropdown.querySelectorAll('.sel-option').forEach(b => {
+                        b.classList.toggle('selected', b.dataset.value === val);
+                    });
+                }
+            });
+
+            // Cleanup
+            const observer = new MutationObserver(() => {
+                if (!document.contains(wrap)) {
+                    dropdown.remove();
+                    observer.disconnect();
+                }
+            });
+            observer.observe(wrap.parentNode || document.body, { childList: true, subtree: true });
+
+            return { open: openDropdown, close: closeDropdown, toggle: toggleDropdown };
+        }
+
+        // ================================================================
+        // SCANNER
+        // ================================================================
+        let html5QrCode = null;
+        let availableCameras = [];
+        let currentCameraIndex = 0;
+
+        function pickBestCameraIndex(cameras) {
+            const ultraWideKeywords = /ultra|wide|0\.6|macro|depth|tele|telephoto/i;
+            const mainKeywords = /back|rear|environment|camera2 0|facing back/i;
+            let mainIdx = cameras.findIndex(c => mainKeywords.test(c.label) && !ultraWideKeywords.test(c.label));
+            if (mainIdx !== -1) return mainIdx;
+            let nonUltraIdx = cameras.findIndex(c => !ultraWideKeywords.test(c.label));
+            if (nonUltraIdx !== -1) return nonUltraIdx;
+            return 0;
+        }
+
+        async function startScanner() {
+            const scannerContainer = document.getElementById('scanner-container');
+            scannerContainer.classList.remove('hidden');
+            if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+            try {
+                const cameras = await Html5Qrcode.getCameras();
+                if (!cameras || cameras.length === 0) { alert("Tidak ada kamera yang terdeteksi!"); return; }
+                availableCameras = cameras;
+                currentCameraIndex = pickBestCameraIndex(cameras);
+                const switchBtn = document.getElementById('switch-camera-btn');
+                if (switchBtn) switchBtn.style.display = cameras.length > 1 ? 'inline-flex' : 'none';
+                await startCameraByIndex(currentCameraIndex);
+            } catch (err) {
+                console.error("Gagal start kamera:", err);
+                alert("Gagal mengakses kamera! Pastikan izin kamera di browser sudah di-Allow.");
+            }
+            scannerContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        async function startCameraByIndex(idx) {
+            if (!availableCameras[idx]) return;
+            const cameraId = availableCameras[idx].id;
+            if (html5QrCode && html5QrCode.isScanning) {
+                await html5QrCode.stop();
+                html5QrCode.clear();
+                html5QrCode = new Html5Qrcode("reader");
+            }
+            await html5QrCode.start({ deviceId: { exact: cameraId } }, { fps: 10, qrbox: { width: 250, height: 250 } },
+                onScanSuccess, onScanFailure
+            );
+        }
+
+        async function switchCamera() {
+            if (availableCameras.length < 2) return;
+            currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+            try { await startCameraByIndex(currentCameraIndex); } catch (err) { console.error("Gagal ganti kamera:", err); }
+        }
+
+        function stopScanner() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => html5QrCode.clear()).catch(err => console.error("Gagal stop scanner", err));
+            }
+            document.getElementById('scanner-container').classList.add('hidden');
+        }
+
+        const ASSET_LOOKUP_API_URL =
+            "https://script.google.com/macros/s/AKfycbz9A3SBoD1JyISyntl32t0h2b4ojYWWVtPRZcdc75et4YnomuekLDTTU_veWx4SufTlHg/exec";
+
+        async function onScanSuccess(decodedText) {
+            stopScanner();
+            let fa = "",
+                name = "",
+                sn = "";
+
+            try {
+                let data = JSON.parse(decodedText);
+                fa = data.asset_no || data.fa || "";
+                name = data.asset_name || data.name || "";
+                sn = data.serial_number || data.sn || "";
+                injectScannedData(fa, name, sn);
+                return;
+            } catch (e) {}
+
+            let url;
+            try { url = new URL(decodedText); } catch (err) {
+                alert("Format Barcode/QR tidak sesuai standar. Raw: " + decodedText);
+                return;
+            }
+
+            let p = {};
+            url.searchParams.forEach((value, key) => { p[key.toLowerCase()] = value; });
+            fa = p["assetno"] || p["asset_no"] || p["fa"] || "";
+
+            if (url.hostname.includes("cloud.finance.binus.edu") && fa) {
+                const companyCode = p["companycode"] || "1000";
+                if (!ASSET_LOOKUP_API_URL || !ASSET_LOOKUP_API_URL.startsWith("https://script.google.com/macros/")) {
+                    alert("⚠️ Proxy belum di-setup. FA ke-isi (" + fa + "), tapi Nama/S-N isi manual.");
+                    injectScannedData(fa, "", "");
+                    return;
+                }
+                try {
+                    const res = await fetch(
+                        `${ASSET_LOOKUP_API_URL}?assetNo=${encodeURIComponent(fa)}&companyCode=${encodeURIComponent(companyCode)}`
+                        );
+                    const info = await res.json();
+                    if (info.found) injectScannedData(info.assetNo || fa, info.brand || "", info.serialNumber || "");
+                    else { alert("AssetNo " + fa + " gak ketemu di sistem finance.");
+                        injectScannedData(fa, "", ""); }
+                } catch (err) {
+                    alert("Gagal konek ke server lookup asset:\n\n" + err.message);
+                    injectScannedData(fa, "", "");
+                }
+                return;
+            }
+
+            name = p["assetname"] || p["asset_name"] || p["name"] || "";
+            sn = p["serialnumber"] || p["serial_number"] || p["sn"] || "";
+            if (fa || name || sn) injectScannedData(fa, name, sn);
+            else alert("Data aset gagal diekstrak dari link barcode yang di-scan.");
+        }
+
+        function onScanFailure() {}
+
+        function injectScannedData(fa, name, sn) {
+            const container = document.getElementById('items-container');
+            const rows = container.querySelectorAll('.item-card');
+            let targetRow = null;
+            for (let i = 0; i < rows.length; i++) {
+                const rowName = rows[i].querySelector('.item-name').value.trim();
+                const rowFa = rows[i].querySelector('.item-fa').value.trim();
+                if (!rowName && !rowFa) { targetRow = rows[i]; break; }
+            }
+            if (!targetRow) {
+                addItemRow();
+                const newRows = container.querySelectorAll('.item-card');
+                targetRow = newRows[newRows.length - 1];
+            }
+            if (name) targetRow.querySelector('.item-name').value = name;
+            if (fa) targetRow.querySelector('.item-fa').value = fa;
+            if (sn) targetRow.querySelector('.item-sn').value = sn;
+            const missingNote = (!name || !sn) ? '\n\n⚠️ Nama/S-N tidak tersedia, mohon isi manual.' : '';
+            alert(`✅ Scan Berhasil!\n\nNama: ${name || '-'}\nFA: ${fa || '-'}\nS/N: ${sn || '-'}${missingNote}`);
+        }
+
+        // ================================================================
+        // OPTIONS
+        // ================================================================
+        const statusOptions = [
+            { value: 'Distribusi', label: 'Distribusi' },
+            { value: 'Peminjaman', label: 'Peminjaman' },
+            { value: 'Penarikan', label: 'Penarikan' },
+            { value: 'Pengembalian', label: 'Pengembalian' },
+            { value: 'Selesai Perbaikan', label: 'Selesai Perbaikan' },
+        ];
+        const kondisiOptions = [
+            { value: 'Baik', label: 'Baik' },
+            { value: 'Rusak', label: 'Rusak' },
+            { value: 'Baru', label: 'Baru' },
+        ];
+
+        // ================================================================
+        // SIGNATURE PAD
+        // ================================================================
+        let sigContexts = {};
+        let sigIsDrawing = { given: false, received: false };
+        let sigLastX = { given: 0, received: 0 };
+        let sigLastY = { given: 0, received: 0 };
+
+        function initSignaturePads() {
+            ['given', 'received'].forEach(id => {
+                const wrapper = document.getElementById('sig-' + id + '-wrapper');
+                if (!wrapper) return;
+                const oldCanvas = wrapper.querySelector('canvas');
+                if (oldCanvas) oldCanvas.remove();
+
+                const canvas = document.createElement('canvas');
+                canvas.id = 'sig-' + id;
+                canvas.style.touchAction = 'none';
+                wrapper.appendChild(canvas);
+
+                const dpr = window.devicePixelRatio || 1;
+                const w = wrapper.clientWidth || 400;
+                const h = Math.max(100, w * 0.25);
+                canvas.width = w * dpr;
+                canvas.height = h * dpr;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+
+                const ctx = canvas.getContext('2d');
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 3 * dpr;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                sigContexts[id] = ctx;
+
+                canvas.addEventListener('mousedown', e => startDrawing(e, id, ctx));
+                canvas.addEventListener('mousemove', e => draw(e, id, ctx));
+                canvas.addEventListener('mouseup', () => stopDrawing(id));
+                canvas.addEventListener('mouseleave', () => stopDrawing(id));
+                canvas.addEventListener('touchstart', e => { e.preventDefault();
+                    startDrawing(e.touches[0], id, ctx); }, { passive: false });
+                canvas.addEventListener('touchmove', e => { e.preventDefault();
+                    draw(e.touches[0], id, ctx); }, { passive: false });
+                canvas.addEventListener('touchend', e => { e.preventDefault();
+                    stopDrawing(id); });
+            });
+        }
+
+        function getCanvasCoords(e, id) {
+            const canvas = document.getElementById('sig-' + id);
+            if (!canvas) return { x: 0, y: 0 };
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            return {
+                x: ((e.clientX || e.pageX) - rect.left) * dpr,
+                y: ((e.clientY || e.pageY) - rect.top) * dpr
+            };
+        }
+
+        function startDrawing(e, id, ctx) {
+            sigIsDrawing[id] = true;
+            const c = getCanvasCoords(e, id);
+            sigLastX[id] = c.x;
+            sigLastY[id] = c.y;
+            ctx.beginPath();
+            ctx.moveTo(c.x, c.y);
+            document.getElementById('sig-' + id + '-wrapper').classList.add('signed');
+        }
+
+        function draw(e, id, ctx) {
+            if (!sigIsDrawing[id]) return;
+            const c = getCanvasCoords(e, id);
+            ctx.beginPath();
+            ctx.moveTo(sigLastX[id], sigLastY[id]);
+            ctx.lineTo(c.x, c.y);
+            ctx.stroke();
+            sigLastX[id] = c.x;
+            sigLastY[id] = c.y;
+        }
+
+        function stopDrawing(id) { sigIsDrawing[id] = false; }
+
+        function clearSignature(id) {
+            const canvas = document.getElementById('sig-' + id);
+            if (!canvas) return;
+            const ctx = sigContexts[id];
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3 * (window.devicePixelRatio || 1);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            const wrapper = document.getElementById('sig-' + id + '-wrapper');
+            wrapper.classList.remove('signed');
+        }
+
+        function getSignatureDataURL(id) {
+            const canvas = document.getElementById('sig-' + id);
+            if (!canvas) return null;
+            const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+            let hasDrawing = false;
+            for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] > 0) { hasDrawing = true; break; } }
+            return hasDrawing ? canvas.toDataURL('image/png') : null;
+        }
+
+        // ================================================================
+        // FORM
+        // ================================================================
+        let itemCounter = 0;
+
+        function initForm() {
+            createDatePicker();
+            document.getElementById('items-container').innerHTML = '';
+            addItemRow();
+            initSignaturePads();
+        }
+
+        // ================================================================
+        // VOICE INPUT
+        // ================================================================
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const isAppleDevice = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (!SpeechRecognitionAPI || isAppleDevice) document.body.classList.add('no-speech-support');
+
+        let activeRecognition = null;
+        let voiceTargetInput = null;
+
+        document.addEventListener('focusin', (e) => {
+            if (e.target.matches('[data-voice-mode]')) {
+                if (voiceTargetInput) voiceTargetInput.classList.remove('voice-target');
+                voiceTargetInput = e.target;
+                voiceTargetInput.classList.add('voice-target');
+            }
+        });
+
+        document.getElementById('global-mic-btn').addEventListener('click', () => {
+            if (!SpeechRecognitionAPI) { alert('Browser ini gak support voice input. Pake Chrome ya bro.'); return; }
+            if (activeRecognition) { activeRecognition.stop(); return; }
+            if (!voiceTargetInput || !document.body.contains(voiceTargetInput)) {
+                alert('Klik dulu kolom yang mau diisi, baru tap mic ini.');
+                return;
+            }
+            const recognition = new SpeechRecognitionAPI();
+            recognition.lang = 'id-ID';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            activeRecognition = recognition;
+            const btn = document.getElementById('global-mic-btn');
+            btn.classList.add('mic-active');
+            btn.textContent = '⏺';
+
+            recognition.onresult = (event) => {
+                let transcript = event.results[0][0].transcript.trim();
+                if (voiceTargetInput.dataset.voiceMode === 'compact') transcript = transcript.replace(/\s+/g, '');
+                voiceTargetInput.value = transcript.toUpperCase();
+                voiceTargetInput.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+            recognition.onerror = (event) => {
+                if (event.error === 'not-allowed') alert('Akses mic ditolak. Cek permission mic browser.');
+            };
+            recognition.onend = () => {
+                btn.classList.remove('mic-active');
+                btn.textContent = '🎤';
+                activeRecognition = null;
+            };
+            recognition.start();
+        });
+
+        // ================================================================
+        // ITEM ROWS
+        // ================================================================
+        function addItemRow(data = null) {
+            const container = document.getElementById('items-container');
+            const rowId = 'item-' + Date.now() + '-' + (itemCounter++);
+            const idx = container.querySelectorAll('.item-card').length + 1;
+            const div = document.createElement('div');
+            div.id = rowId;
+            div.className = 'item-card';
+
+            const statusOpts = statusOptions.map(s =>
+                `<option value="${s.value}" ${data?.status === s.value ? 'selected' : ''}>${s.label}</option>`).join('');
+            const kondisiOpts = kondisiOptions.map(k =>
+                `<option value="${k.value}" ${data?.kondisi === k.value ? 'selected' : ''}>${k.label}</option>`).join('');
+
+            div.innerHTML = `
+                    <div class="item-card-header">
+                        <span class="item-card-title">Barang #${idx}</span>
+                        <button type="button" onclick="removeItemRow('${rowId}')" class="item-remove-btn">✕</button>
+                    </div>
+                    <div class="item-fields-grid">
+                        <div class="item-field-cell full" style="border-bottom:0.5px solid var(--separator);">
+                            <div class="ios-stacked-label-sm">Nama Barang</div>
+                            <input type="text" class="item-name ios-stacked-input-sm" data-voice-mode="spaced" placeholder="Nama Barang" value="${data?.name || ''}" />
+                        </div>
+                        <div class="item-field-cell full" style="border-bottom:0.5px solid var(--separator);">
+                            <div class="ios-stacked-label-sm">Spesifikasi</div>
+                            <input type="text" class="item-spec ios-stacked-input-sm" data-voice-mode="spaced" placeholder="Spesifikasi" value="${data?.spec || ''}" />
+                        </div>
+                        <div class="item-field-cell" style="border-bottom:0.5px solid var(--separator);border-right:0.5px solid var(--separator);">
+                            <div class="ios-stacked-label-sm">Qty</div>
+                            <input type="number" class="item-qty ios-stacked-input-sm" placeholder="1" value="${data?.qty || 1}" min="1" />
+                        </div>
+                        <div class="item-field-cell" style="border-bottom:0.5px solid var(--separator);">
+                            <div class="ios-stacked-label-sm">FA Number</div>
+                            <input type="text" class="item-fa ios-stacked-input-sm" data-voice-mode="compact" placeholder="FA-XXXX" value="${data?.fa || ''}" />
+                        </div>
+                        <div class="item-field-cell" style="border-bottom:0.5px solid var(--separator);border-right:0.5px solid var(--separator);">
+                            <div class="ios-stacked-label-sm">S/N</div>
+                            <input type="text" class="item-sn ios-stacked-input-sm" data-voice-mode="compact" placeholder="Serial No." value="${data?.sn || ''}" />
+                        </div>
+                        <div class="item-field-cell" style="border-bottom:0.5px solid var(--separator);">
+                            <div class="ios-stacked-label-sm">Kondisi</div>
+                            <select class="item-kondisi ios-stacked-input-sm custom-select-replace">${kondisiOpts}</select>
+                        </div>
+                        <div class="item-field-cell full">
+                            <div class="ios-stacked-label-sm">Status</div>
+                            <select class="item-status ios-stacked-input-sm custom-select-replace">${statusOpts}</select>
+                        </div>
+                    </div>
+                `;
+
+            container.appendChild(div);
+
+            // Initialize custom selects
+            div.querySelectorAll('.custom-select-replace').forEach(sel => {
+                const opts = Array.from(sel.options).map(o => ({ value: o.value, label: o.text }));
+                createCustomSelect(sel, opts);
+            });
+        }
+
+        function removeItemRow(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'scale(0.95)';
+                setTimeout(() => el.remove(), 200);
+            }
+        }
+
+        function resetForm() {
+            ['given-by', 'given-id', 'received-by', 'received-id'].forEach(id => document.getElementById(id).value = '');
+            const now = new Date();
+            const hidden = document.getElementById('receipt-date');
+            const display = document.getElementById('date-display');
+            const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            hidden.value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate())
+            .padStart(2, '0');
+            display.textContent = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            display.className = 'date-text';
+            if (datePickerInstance) {
+                datePickerInstance.selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                datePickerInstance.currentMonth = now.getMonth();
+                datePickerInstance.currentYear = now.getFullYear();
+            }
+
+            document.getElementById('items-container').innerHTML = '';
+            addItemRow();
+            clearSignature('given');
+            clearSignature('received');
+            document.getElementById('form-error').classList.remove('show');
+            document.getElementById('download-btn').disabled = true;
+            document.getElementById('download-docx-btn').disabled = true;
+            document.getElementById('gen-btn-text').innerText = 'Generate Tanda Terima';
+        }
+
+        // ================================================================
+        // GENERATE RECEIPT
+        // ================================================================
+        function generateReceipt(e) {
+            e.preventDefault();
+            const givenBy = document.getElementById('given-by').value.trim();
+            const givenId = document.getElementById('given-id').value.trim() || '-';
+            const receivedBy = document.getElementById('received-by').value.trim();
+            const receivedId = document.getElementById('received-id').value.trim() || '-';
+            const dateVal = document.getElementById('receipt-date').value;
+            const errorEl = document.getElementById('form-error');
+
+            if (!givenBy || !receivedBy) {
+                errorEl.textContent = '⚠️ "Diberikan Oleh" dan "Diterima Oleh" wajib diisi!';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            if (!dateVal) {
+                errorEl.textContent = '⚠️ Tanggal wajib dipilih!';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            const sigGiven = getSignatureDataURL('given');
+            const sigReceived = getSignatureDataURL('received');
+            if (!sigGiven) { errorEl.textContent = '⚠️ Tanda tangan "Diserahkan Oleh" wajib diisi!';
+                errorEl.classList.add('show'); return; }
+            if (!sigReceived) { errorEl.textContent = '⚠️ Tanda tangan "Diterima Oleh" wajib diisi!';
+                errorEl.classList.add('show'); return; }
+
+            const rows = document.querySelectorAll('#items-container .item-card');
+            const items = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.item-name').value.trim();
+                const spec = row.querySelector('.item-spec').value.trim() || '-';
+                const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+                const fa = row.querySelector('.item-fa').value.trim() || '-';
+                const sn = row.querySelector('.item-sn').value.trim() || '-';
+                const kondisi = row.querySelector('.item-kondisi')?.value || 'Baik';
+                const status = row.querySelector('.item-status')?.value || 'Distribusi';
+                if (name && qty > 0) items.push({ name, spec, qty, fa, sn, kondisi, status });
+            });
+            if (items.length === 0) {
+                errorEl.textContent = '⚠️ Tambahkan minimal 1 barang dengan Qty > 0!';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            const dateObj = new Date(dateVal + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit',
+                month: 'long', year: 'numeric' });
+
+            errorEl.classList.remove('show');
+            document.getElementById('receipt-preview').innerHTML = buildReceiptHTML(givenBy, givenId, receivedBy, receivedId,
+                formattedDate, items, sigGiven, sigReceived);
+            document.getElementById('download-btn').disabled = false;
+            document.getElementById('download-docx-btn').disabled = false;
+            document.getElementById('gen-btn-text').innerText = '✅ Siap Download!';
+            setTimeout(() => document.getElementById('gen-btn-text').innerText = 'Generate Tanda Terima', 3000);
+        }
+
+        // ================================================================
+        // BUILD RECEIPT HTML
+        // ================================================================
+        function buildReceiptHTML(givenBy, givenId, receivedBy, receivedId, formattedDate, items, sigGiven, sigReceived) {
+            let itemsHtml = '';
+            items.forEach(item => {
+                itemsHtml += `<tr>
+                        <td>${item.name}</td><td>${item.spec}</td><td>${item.qty}</td>
+                        <td>${item.fa}</td><td>${item.sn}</td><td>${item.kondisi}</td><td>${item.status}</td>
+                    </tr>`;
+            });
+            return `<div>
+                    <div class="receipt-title">TANDA TERIMA BARANG</div>
+                    <div class="receipt-header-info">
+                        <div class="info-row"><span class="lbl">TELAH TERIMA DARI</span><span class="colon">:</span><span class="val">${givenBy}</span></div>
+                        <div class="info-row"><span class="lbl">DIBERIKAN KEPADA</span><span class="colon">:</span><span class="val">${receivedBy}</span></div>
+                    </div>
+                    <table class="main-table">
+                        <thead><tr>
+                            <th style="width:25%;">NAMA BARANG</th>
+                            <th style="width:25%;">SPESIFIKASI BARANG</th>
+                            <th style="width:5%;">QTY</th>
+                            <th style="width:15%;">FA Number</th>
+                            <th style="width:10%;">S/N</th>
+                            <th style="width:10%;">Kondisi</th>
+                            <th style="width:10%;">Status</th>
+                        </tr></thead>
+                        <tbody>${itemsHtml}</tbody>
+                    </table>
+                    <table class="sig-table">
+                        <thead><tr>
+                            <th style="width:50%;">Diserahkan Oleh</th>
+                            <th style="width:50%;">Diterima Oleh</th>
+                        </tr></thead>
+                        <tbody><tr>
+                            <td>
+                                <img src="${sigGiven}" class="sig-image" alt="TTD" />
+                                <div class="sig-details">
+                                    <div class="sig-row"><span class="s-lbl">Nama</span><span class="s-colon">:</span><span class="s-val">${givenBy}</span></div>
+                                    <div class="sig-row"><span class="s-lbl">Binusian ID</span><span class="s-colon">:</span><span class="s-val">${givenId !== '-' ? givenId : ''}</span></div>
+                                    <div class="sig-row"><span class="s-lbl">Tanggal</span><span class="s-colon">:</span><span class="s-val">${formattedDate}</span></div>
+                                </div>
+                            </td>
+                            <td>
+                                <img src="${sigReceived}" class="sig-image" alt="TTD" />
+                                <div class="sig-details">
+                                    <div class="sig-row"><span class="s-lbl">Nama</span><span class="s-colon">:</span><span class="s-val">${receivedBy}</span></div>
+                                    <div class="sig-row"><span class="s-lbl">Binusian ID</span><span class="s-colon">:</span><span class="s-val">${receivedId !== '-' ? receivedId : ''}</span></div>
+                                    <div class="sig-row"><span class="s-lbl">Tanggal</span><span class="s-colon">:</span><span class="s-val">${formattedDate}</span></div>
+                                </div>
+                            </td>
+                        </tr></tbody>
+                    </table>
+                </div>`;
+        }
+
+        // ================================================================
+        // DOWNLOAD PNG
+        // ================================================================
+        async function downloadReceipt() {
+            const btn = document.getElementById('download-btn');
+            const preview = document.getElementById('receipt-preview');
+            if (!preview.querySelector('table')) { alert('Generate tanda terima terlebih dahulu!'); return; }
+            btn.innerText = '⏳ ...';
+            btn.disabled = true;
+            try {
+                const canvas = await html2canvas(preview, {
+                    scale: 2,
+                    backgroundColor: '#FFFFFF',
+                    allowTaint: true,
+                    useCORS: true,
+                    logging: false,
+                    onclone: (clonedDoc) => {
+                        clonedDoc.querySelectorAll('.sig-image').forEach(img => {
+                            img.style.maxHeight = '130px';
+                            img.style.maxWidth = '90%';
+                            img.style.objectFit = 'contain';
+                            img.style.background = 'transparent';
+                            img.style.width = 'auto';
+                        });
+                    }
+                });
+                const link = document.createElement('a');
+                link.download = `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.innerText = '⬇ PNG';
+                btn.disabled = false;
+            } catch (err) {
+                console.error(err);
+                alert('Gagal generate gambar.');
+                btn.innerText = '⬇ PNG';
+                btn.disabled = false;
+            }
+        }
+
+        // ================================================================
+        // DOWNLOAD DOCX
+        // ================================================================
+        async function downloadDocx() {
+            const btn = document.getElementById('download-docx-btn');
+            if (typeof docx === 'undefined') { alert('Library DOCX gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
+                return; }
+            if (typeof saveAs === 'undefined') { alert('Library FileSaver gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
+                return; }
+
+            btn.innerText = '⏳ ...';
+            btn.disabled = true;
+
+            try {
+                const givenBy = document.getElementById('given-by').value.trim();
+                const givenId = document.getElementById('given-id').value.trim() || '-';
+                const receivedBy = document.getElementById('received-by').value.trim();
+                const receivedId = document.getElementById('received-id').value.trim() || '-';
+                const dateVal = document.getElementById('receipt-date').value;
+                if (!dateVal) { alert('Tanggal belum dipilih!');
+                    btn.innerText = '📄 DOCX';
+                    btn.disabled = false; return; }
+                const dateObj = new Date(dateVal + 'T00:00:00');
+                const formattedDate = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit',
+                        month: 'long', year: 'numeric' });
+
+                const rows = document.querySelectorAll('#items-container .item-card');
+                const items = [];
+                rows.forEach(row => {
+                    const name = row.querySelector('.item-name').value.trim();
+                    const spec = row.querySelector('.item-spec').value.trim() || '-';
+                    const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+                    const fa = row.querySelector('.item-fa').value.trim() || '-';
+                    const sn = row.querySelector('.item-sn').value.trim() || '-';
+                    const kondisi = row.querySelector('.item-kondisi')?.value || 'Baik';
+                    const status = row.querySelector('.item-status')?.value || 'Distribusi';
+                    if (name && qty > 0) items.push({ name, spec, qty, fa, sn, kondisi, status });
+                });
+                if (items.length === 0) { alert('Tidak ada data item!');
+                    btn.innerText = '📄 DOCX';
+                    btn.disabled = false; return; }
+
+                const sigGivenDataUrl = getSignatureDataURL('given');
+                const sigReceivedDataUrl = getSignatureDataURL('received');
+                if (!sigGivenDataUrl) { alert('Tanda tangan "Diserahkan Oleh" wajib diisi!');
+                    btn.innerText = '📄 DOCX';
+                    btn.disabled = false; return; }
+                if (!sigReceivedDataUrl) { alert('Tanda tangan "Diterima Oleh" wajib diisi!');
+                    btn.innerText = '📄 DOCX';
+                    btn.disabled = false; return; }
+
+                const sigGivenBase64 = sigGivenDataUrl.split(',')[1] || null;
+                const sigReceivedBase64 = sigReceivedDataUrl.split(',')[1] || null;
+
+                const blob = await buildReceiptDocxBlob({ givenBy, givenId, receivedBy, receivedId, formattedDate, items,
+                    sigGivenBase64, sigReceivedBase64 });
+                saveAs(blob, `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.docx`);
+
+                btn.innerText = '✅ Done!';
+                setTimeout(() => { btn.innerText = '📄 DOCX';
+                    btn.disabled = false; }, 3000);
+            } catch (err) {
+                console.error('Gagal generate DOCX:', err);
+                alert('Terjadi kesalahan saat generate DOCX:\n\n' + (err?.message || err));
+                btn.innerText = '📄 DOCX';
+                btn.disabled = false;
+            }
+        }
+
+        // ================================================================
+        // DOCX BUILDER
+        // ================================================================
+        async function buildReceiptDocxBlob({ givenBy, givenId, receivedBy, receivedId, formattedDate, items,
+                sigGivenBase64, sigReceivedBase64 }) {
+            const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, AlignmentType, WidthType,
+                BorderStyle, VerticalAlign } = docx;
+
+            const cellBorders = {
+                top: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+                bottom: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+                left: { style: BorderStyle.SINGLE, size: 1, color: '000000' },
+                right: { style: BorderStyle.SINGLE, size: 1, color: '000000' }
+            };
+            const noBorderStyle = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+            const noBorders = { top: noBorderStyle, bottom: noBorderStyle, left: noBorderStyle, right: noBorderStyle,
+                insideH: noBorderStyle, insideV: noBorderStyle };
+
+            function cellText(text, opts = {}) {
+                const { width, bold = false, align = 'center' } = opts;
+                const alignMap = { center: AlignmentType.CENTER, left: AlignmentType.LEFT, right: AlignmentType.RIGHT };
+                const cellOpts = {
+                    children: [new Paragraph({ alignment: alignMap[align] || AlignmentType.CENTER, children: [
+                            new TextRun({ text: String(text ?? ''), font: 'Arial', size: 22, bold })
+                        ] })],
+                    verticalAlign: VerticalAlign.CENTER,
+                    margins: { top: 60, bottom: 60, left: 80, right: 80 },
+                    borders: cellBorders
+                };
+                if (width) cellOpts.width = { size: width, type: WidthType.DXA };
+                return new TableCell(cellOpts);
+            }
+
+            function infoRow(label, value) {
+                return new TableRow({ children: [
+                        new TableCell({ width: { size: 2400, type: WidthType.DXA }, borders: noBorders, margins: { top: 40,
+                                    bottom: 40, left: 0, right: 0 }, children: [new Paragraph({ children: [
+                                        new TextRun({ text: label, font: 'Arial', size: 22 })
+                                    ] })] }),
+                        new TableCell({ width: { size: 300, type: WidthType.DXA }, borders: noBorders, margins: { top: 40,
+                                    bottom: 40, left: 0, right: 0 }, children: [new Paragraph({ children: [
+                                        new TextRun({ text: ':', font: 'Arial', size: 22 })
+                                    ] })] }),
+                        new TableCell({ borders: noBorders, margins: { top: 40, bottom: 40, left: 0, right: 0 },
+                            children: [new Paragraph({ children: [new TextRun({ text: value || '', font: 'Arial',
+                                        size: 22 })] })] })
+                    ] });
+            }
+
+            const infoTable = new Table({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                borders: noBorders,
+                rows: [infoRow('TELAH TERIMA DARI', givenBy), infoRow('DIBERIKAN KEPADA', receivedBy)]
+            });
+
+            const headerLabels = ['NAMA BARANG', 'SPESIFIKASI BARANG', 'QTY', 'FA Number', 'S/N', 'Kondisi', 'Status'];
+            const headerWidths = [2000, 2000, 700, 1400, 1000, 1000, 1000];
+            const headerRow = new TableRow({ children: headerLabels.map((l, i) => cellText(l, { width: headerWidths[i],
+                    align: 'center' })) });
+            const itemDataRows = items.map(item => new TableRow({ children: [
+                    cellText(item.name, { width: headerWidths[0], align: 'left' }),
+                    cellText(item.spec, { width: headerWidths[1], align: 'left' }),
+                    cellText(item.qty, { width: headerWidths[2] }),
+                    cellText(item.fa, { width: headerWidths[3] }),
+                    cellText(item.sn, { width: headerWidths[4] }),
+                    cellText(item.kondisi, { width: headerWidths[5] }),
+                    cellText(item.status, { width: headerWidths[6] }),
+                ] }));
+            const itemTable = new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [headerRow,
+                    ...itemDataRows
+                ] });
+
+            function base64ToUint8Array(base64) {
+                const raw = atob(base64);
+                const arr = new Uint8Array(raw.length);
+                for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+                return arr;
+            }
+
+            function detailRow(label, value) {
+                const nb = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+                const nb2 = { top: nb, bottom: nb, left: nb, right: nb, insideH: nb, insideV: nb };
+                return new TableRow({ children: [
+                        new TableCell({ width: { size: 1100, type: WidthType.DXA }, borders: nb2, margins: { top: 0,
+                                    bottom: 0, left: 0, right: 0 }, children: [new Paragraph({ children: [
+                                        new TextRun({ text: label, font: 'Arial', size: 20 })
+                                    ] })] }),
+                        new TableCell({ width: { size: 200, type: WidthType.DXA }, borders: nb2, margins: { top: 0,
+                                    bottom: 0, left: 0, right: 0 }, children: [new Paragraph({ children: [
+                                        new TextRun({ text: ':', font: 'Arial', size: 20 })
+                                    ] })] }),
+                        new TableCell({ borders: nb2, margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [
+                                new Paragraph({ children: [new TextRun({ text: value || '', font: 'Arial',
+                                        size: 20 })] })
+                            ] })
+                    ] });
+            }
+
+            function buildSignatureBodyCell(name, idVal, base64Data) {
+                const children = [];
+                let imageAdded = false;
+                if (base64Data) {
+                    try {
+                        children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 200,
+                                after: 200 }, children: [new ImageRun({ type: 'png', data: base64ToUint8Array(
+                                    base64Data), transformation: { width: 250, height: 100 } })] }));
+                        imageAdded = true;
+                    } catch (e) { console.warn('Gagal embed TTD:', e); }
+                }
+                if (!imageAdded) children.push(new Paragraph({ text: ' ', spacing: { before: 800, after: 800 } }));
+
+                const nb = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+                const nbords = { top: nb, bottom: nb, left: nb, right: nb, insideH: nb, insideV: nb };
+                children.push(new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, borders: nbords, rows: [
+                        detailRow('Nama', name || ''),
+                        detailRow('Binusian ID', idVal && idVal !== '-' ? idVal : ''),
+                        detailRow('Tanggal', formattedDate)
+                    ] }));
+
+                return new TableCell({ width: { size: 50, type: WidthType.PERCENTAGE }, borders: cellBorders, margins: { top: 80,
+                            bottom: 120, left: 120, right: 120 }, children });
+            }
+
+            function buildSignatureLabelCell(label) {
+                return new TableCell({ width: { size: 50, type: WidthType.PERCENTAGE }, borders: cellBorders, margins: { top: 80,
+                            bottom: 80, left: 120, right: 120 }, children: [new Paragraph({ alignment: AlignmentType
+                                .CENTER, children: [new TextRun({ text: label, font: 'Arial', size: 22 })] })] });
+            }
+
+            const sigTable = new Table({ width: { size: 100, type: WidthType.PERCENTAGE }, rows: [
+                    new TableRow({ children: [buildSignatureLabelCell('Diserahkan Oleh'), buildSignatureLabelCell(
+                            'Diterima Oleh')] }),
+                    new TableRow({ children: [buildSignatureBodyCell(givenBy, givenId, sigGivenBase64),
+                            buildSignatureBodyCell(receivedBy, receivedId, sigReceivedBase64)
+                        ] })
+                ] });
+
+            const doc = new Document({ sections: [{ properties: { page: { margin: { top: 1440, bottom: 1440, left: 1440,
+                                right: 1440 } } }, children: [
+                        new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 360 }, children: [
+                                new TextRun({ text: 'TANDA TERIMA BARANG', font: 'Arial', size: 28, bold: true,
+                                    underline: {} })
+                            ] }),
+                        infoTable,
+                        new Paragraph({ spacing: { after: 240 }, children: [] }),
+                        itemTable,
+                        new Paragraph({ spacing: { after: 360 }, children: [] }),
+                        sigTable
+                    ] }] });
+
+            return await Packer.toBlob(doc);
+        }
+
+        // ================================================================
+        // INIT
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('binus_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.documentElement.style.colorScheme = savedTheme;
+            const savedLang = localStorage.getItem('binus_lang');
+            if (savedLang) currentLang = savedLang;
+            updateThemeUI();
+            initForm();
+
+            // Convert any existing custom selects (safety)
+            document.querySelectorAll('.custom-select-replace').forEach(sel => {
+                const opts = Array.from(sel.options).map(o => ({ value: o.value, label: o.text }));
+                createCustomSelect(sel, opts);
+            });
+        });
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                const wrapper = document.getElementById('sig-given-wrapper');
+                const canvas = document.getElementById('sig-given');
+                if (wrapper && canvas) {
+                    const dpr = window.devicePixelRatio || 1;
+                    if (Math.abs(canvas.width - wrapper.clientWidth * dpr) > 10) initSignaturePads();
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>
