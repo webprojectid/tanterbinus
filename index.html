@@ -22,10 +22,10 @@
            ROOT VARIABLES
            ================================================================ */
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.14);
-            --glass-border: rgba(255, 255, 255, 0.20);
-            --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
-            --glass-blur: 24px;
+            --glass-bg: rgba(240, 240, 245, 0.75);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            --glass-blur: 20px;
             --label: #1c1c1e;
             --label2: rgba(60, 60, 67, 0.7);
             --label3: rgba(60, 60, 67, 0.40);
@@ -39,7 +39,7 @@
             --radius-sm: 10px;
             --radius-md: 14px;
             --radius-lg: 18px;
-            --radius-xl: 22px;
+            --radius-xl: 14px;
             --bg-calendar: rgba(255, 255, 255, 0.92);
             --text-calendar: #1c1c1e;
             --cell-hover: rgba(0, 122, 255, 0.12);
@@ -48,9 +48,9 @@
         }
 
         [data-theme="dark"] {
-            --glass-bg: rgba(255, 255, 255, 0.07);
-            --glass-border: rgba(255, 255, 255, 0.10);
-            --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+            --glass-bg: rgba(36, 36, 36, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             --label: #f5f5f7;
             --label2: rgba(235, 235, 245, 0.55);
             --label3: rgba(235, 235, 245, 0.30);
@@ -77,11 +77,10 @@
             padding: 0;
         }
 
-        html,
-        body {
+        html, body {
             min-height: 100vh;
             min-height: 100dvh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -91,7 +90,7 @@
             inset: 0;
             z-index: 0;
             overflow: hidden;
-            background: #0b0b12; /* Fallback color */
+            background: #0b0b12; 
         }
 
         /* -------- BODY -------- */
@@ -107,38 +106,20 @@
         /* ================================================================
            GLASSMORPHISM COMPONENTS
            ================================================================ */
-        .glass {
+        .glass, .ios-group, .item-card {
             background: var(--glass-bg);
             backdrop-filter: blur(var(--glass-blur));
             -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 0.5px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: var(--radius-xl);
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .ios-group {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 0.5px solid var(--glass-border);
+            border: 1px solid var(--glass-border);
             box-shadow: var(--glass-shadow);
             border-radius: var(--radius-xl);
             overflow: hidden;
-            margin-bottom: 10px;
-            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 12px;
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .item-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 0.5px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            margin-bottom: 10px;
-            transition: opacity 0.2s, transform 0.2s, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        .item-card:hover {
+            transform: translateY(-2px);
         }
 
         .nav-bar {
@@ -148,7 +129,7 @@
             background: var(--nav-bg);
             backdrop-filter: var(--nav-blur);
             -webkit-backdrop-filter: var(--nav-blur);
-            border-bottom: 0.5px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
             padding: env(safe-area-inset-top, 0) 0 0;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
@@ -159,7 +140,7 @@
             background: var(--glass-bg);
             backdrop-filter: blur(var(--glass-blur));
             -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 0.5px solid var(--glass-border);
+            border: 1px solid var(--glass-border);
             box-shadow: var(--glass-shadow);
             margin-bottom: 10px;
         }
@@ -170,7 +151,7 @@
             background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1.5px dashed var(--separator);
+            border: 1px dashed var(--separator);
             overflow: hidden;
             touch-action: none;
             cursor: crosshair;
@@ -196,262 +177,123 @@
         }
 
         /* ================================================================
-           NAV BUTTONS
+           UIVERSE RESET BUTTON
            ================================================================ */
-        .nav-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 0.5px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            height: 32px;
-            padding: 0 12px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--tint);
-            cursor: pointer;
-            transition: opacity 0.15s, background 0.15s, transform 0.1s;
-            gap: 4px;
-            white-space: nowrap;
+        .btn-uiverse-reset {
+          --primary: 255, 90, 120;
+          --secondary: 150, 50, 60;
+          width: 60px;
+          height: 50px;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          user-select: none;
+          touch-action: manipulation;
+          outline: 10px solid rgb(var(--primary), .5);
+          border-radius: 100%;
+          position: relative;
+          transition: .3s;
+          background: transparent;
         }
-        .nav-btn:active {
-            opacity: 0.6;
-            transform: scale(0.94);
-        }
-
-        .theme-pill {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 56px;
-            height: 32px;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            cursor: pointer;
-            padding: 2px;
-            overflow: hidden;
-            flex-shrink: 0;
-            transition: background 0.3s ease;
-        }
-
-        .theme-pill-thumb {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 26px;
-            height: 26px;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.70);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.20);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        [data-theme="dark"] .theme-pill-thumb {
-            transform: translateX(24px);
-            background: rgba(40, 40, 44, 0.80);
-        }
-
-        .theme-pill-icons {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 6px;
-            font-size: 12px;
-            pointer-events: none;
-            position: relative;
-            z-index: 1;
-        }
+        .btn-uiverse-reset .back { background: rgb(var(--secondary)); border-radius: 100%; position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+        .btn-uiverse-reset .front { background: linear-gradient(0deg, rgba(var(--primary), .6) 20%, rgba(var(--primary)) 50%); box-shadow: 0 .5em 1em -0.2em rgba(var(--secondary), .5); border-radius: 100%; position: absolute; border: 1px solid rgb(var(--secondary)); left: 0; top: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; font-weight: 600; font-family: inherit; transform: translateY(-15%); transition: .15s; color: rgb(var(--secondary)); }
+        .btn-uiverse-reset:active .front { transform: translateY(0%); box-shadow: 0 0; }
 
         /* ================================================================
-           FLOATING MIC
+           UIVERSE DELETE BUTTON
            ================================================================ */
-        #global-mic-btn {
-            position: fixed;
-            bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
-            right: 20px;
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 0.5px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            color: var(--label);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 999;
-            transition: background 0.2s, border-color 0.2s, transform 0.1s, box-shadow 0.2s;
-            touch-action: manipulation;
-        }
-
-        #global-mic-btn:active {
-            transform: scale(0.92);
-        }
-        #global-mic-btn.mic-active {
-            background: var(--red);
-            border-color: var(--red);
-            color: #fff;
-            animation: mic-pulse 1.2s ease-in-out infinite;
-        }
-
-        @keyframes mic-pulse {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.35), var(--glass-shadow);
-            }
-            50% {
-                box-shadow: 0 0 0 12px rgba(255, 59, 48, 0), var(--glass-shadow);
-            }
-        }
-
-        body.no-speech-support #global-mic-btn {
-            display: none;
-        }
+        .btn-delete-uiverse { width: 90px; height: 32px; cursor: pointer; display: flex; align-items: center; background: red; border: none; border-radius: 5px; box-shadow: 1px 1px 3px rgba(0,0,0,0.15); background: #e62222; position: relative; overflow: hidden; }
+        .btn-delete-uiverse, .btn-delete-uiverse span { transition: 200ms; }
+        .btn-delete-uiverse .text { transform: translateX(12px); color: white; font-weight: bold; font-size: 12px; }
+        .btn-delete-uiverse .icon { position: absolute; border-left: 1px solid #c41b1b; transform: translateX(64px); height: 26px; width: 26px; display: flex; align-items: center; justify-content: center; }
+        .btn-delete-uiverse svg { width: 12px; fill: #eee; }
+        .btn-delete-uiverse:hover { background: #ff3636; }
+        .btn-delete-uiverse:hover .text { color: transparent; }
+        .btn-delete-uiverse:hover .icon { width: 90px; border-left: none; transform: translateX(0); }
+        .btn-delete-uiverse:active .icon svg { transform: scale(0.8); }
 
         /* ================================================================
-           CUSTOM DATE PICKER & SELECT
+           UIVERSE LENFEAR METALLIC BUTTON 
            ================================================================ */
-        .custom-date-trigger {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            flex: 1;
-            background: transparent;
-            border: none;
-            font-family: inherit;
-            font-size: 17px;
-            font-weight: 400;
-            color: var(--label);
-            outline: none;
-            padding: 0;
-            cursor: pointer;
-            gap: 6px;
-            min-width: 0;
+        .btn-lenfear {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          outline: none;
+          cursor: pointer;
+          background-image: linear-gradient(to top, #D8D9DB 0%, #fff 80%, #FDFDFD 100%);
+          border-radius: 30px;
+          border: 1px solid #8F9092;
+          transition: all 0.2s ease;
+          font-family: inherit;
+          font-weight: 600;
+          color: #606060;
+          text-shadow: 0 1px #fff;
+          padding: 0;
         }
 
-        .custom-date-trigger .date-text { color: var(--label); }
-        .custom-date-trigger .date-text.placeholder { color: var(--label3); }
-        .custom-date-trigger .date-arrow { font-size: 12px; color: var(--label2); transition: transform 0.25s; }
-        .custom-date-trigger .date-arrow.open { transform: rotate(180deg); }
+        .btn-lenfear:not(:disabled):hover { box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 3px 3px #CECFD1; }
+        .btn-lenfear:not(:disabled):active, .btn-lenfear:not(:disabled):focus { box-shadow: 0 4px 3px 1px #FCFCFC, 0 6px 8px #D6D7D9, 0 -4px 4px #CECFD1, 0 -6px 4px #FEFEFE, inset 0 0 5px 3px #999, inset 0 0 30px #aaa; }
+        .btn-lenfear:disabled { opacity: 0.5; pointer-events: none; }
 
-        .calendar-popup {
-            position: fixed;
-            z-index: 500;
-            background: var(--bg-calendar);
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
-            border: 0.5px solid var(--glass-border);
-            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.30), var(--glass-shadow);
-            border-radius: var(--radius-xl);
-            padding: 18px 20px 16px;
-            min-width: 290px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-            opacity: 0;
-            transform: scale(0.92) translateY(8px);
-            pointer-events: none;
-            color: var(--text-calendar);
-        }
-
-        .calendar-popup.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            pointer-events: auto;
-        }
-
-        .calendar-popup .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 0.5px solid var(--separator); }
-        .calendar-popup .cal-month-year { font-size: 16px; font-weight: 600; color: var(--text-calendar); letter-spacing: -0.2px; }
-        .calendar-popup .cal-nav { display: flex; gap: 2px; }
-        .calendar-popup .cal-nav button { width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: var(--text-calendar); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
-        .calendar-popup .cal-nav button:hover { background: var(--cell-hover); }
-        .calendar-popup .cal-nav button:active { transform: scale(0.92); }
-        .calendar-popup .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; font-weight: 600; color: var(--label2); margin-bottom: 6px; letter-spacing: 0.3px; text-transform: uppercase; }
-        .calendar-popup .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-        .calendar-popup .cal-day { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 400; border-radius: 50%; cursor: pointer; transition: background 0.15s, color 0.15s; color: var(--text-calendar); border: none; background: transparent; font-family: inherit; width: 100%; padding: 0; }
-        .calendar-popup .cal-day:hover:not(.empty) { background: var(--cell-hover); }
-        .calendar-popup .cal-day.empty { cursor: default; pointer-events: none; opacity: 0; }
-        .calendar-popup .cal-day.other-month { opacity: 0.35; }
-        .calendar-popup .cal-day.today { font-weight: 600; color: var(--tint); }
-        .calendar-popup .cal-day.selected { background: var(--cell-selected); color: var(--cell-selected-text); font-weight: 600; }
-        .calendar-popup .cal-day.selected:hover { background: var(--cell-selected); }
-        .calendar-popup .cal-footer { display: flex; justify-content: flex-end; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 0.5px solid var(--separator); }
-        .calendar-popup .cal-footer button { border: none; background: transparent; font-size: 14px; font-weight: 600; color: var(--tint); cursor: pointer; padding: 4px 10px; border-radius: 50px; transition: background 0.15s; font-family: inherit; }
-        .calendar-popup .cal-footer button:hover { background: var(--cell-hover); }
-        .calendar-popup .cal-footer button:active { transform: scale(0.94); }
-        .calendar-popup .cal-footer .cal-clear { color: var(--red); }
-
-        .custom-select-wrap { position: relative; flex: 1; min-width: 0; }
-        .custom-select-trigger { display: flex; align-items: center; justify-content: space-between; background: transparent; border: none; font-family: inherit; font-size: 15px; font-weight: 400; color: var(--label); outline: none; width: 100%; padding: 0; cursor: pointer; gap: 6px; min-width: 0; }
-        .custom-select-trigger .sel-text { color: var(--label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .custom-select-trigger .sel-text.placeholder { color: var(--label3); }
-        .custom-select-trigger .sel-arrow { font-size: 10px; color: var(--label2); flex-shrink: 0; transition: transform 0.25s; }
-        .custom-select-trigger .sel-arrow.open { transform: rotate(180deg); }
-
-        .select-dropdown { position: fixed; z-index: 400; background: var(--bg-calendar); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%); border: 0.5px solid var(--glass-border); box-shadow: 0 16px 60px rgba(0, 0, 0, 0.25), var(--glass-shadow); border-radius: var(--radius-md); padding: 4px 0; min-width: 140px; max-width: 260px; max-height: 240px; overflow-y: auto; transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); opacity: 0; transform: scale(0.92) translateY(6px); pointer-events: none; color: var(--text-calendar); overscroll-behavior: contain; }
-        .select-dropdown.visible { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
-        .select-dropdown .sel-option { padding: 10px 16px; font-size: 14px; font-weight: 400; color: var(--text-calendar); cursor: pointer; transition: background 0.12s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: none; background: transparent; width: 100%; text-align: left; font-family: inherit; }
-        .select-dropdown .sel-option:hover { background: var(--cell-hover); }
-        .select-dropdown .sel-option:active { transform: scale(0.97); }
-        .select-dropdown .sel-option.selected { background: var(--cell-selected); color: var(--cell-selected-text); }
-        .select-dropdown::-webkit-scrollbar { width: 4px; }
-        .select-dropdown::-webkit-scrollbar-track { background: transparent; }
-        .select-dropdown::-webkit-scrollbar-thumb { background: var(--separator); border-radius: 4px; }
+        .btn-lenfear-sm { height: 36px; padding: 0 16px; font-size: 13px; min-width: 80px; }
+        .btn-lenfear-lg { width: 100%; height: 50px; font-size: 15px; }
 
         /* ================================================================
-           IOS ROWS & TYPOGRAPHY
+           UIVERSE GENERATE BUTTON (FColombati)
            ================================================================ */
-        .ios-row { display: flex; align-items: center; padding: 0 16px; min-height: 52px; gap: 12px; position: relative; }
-        .ios-row:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 0; height: 0.5px; background: var(--separator); }
-        .ios-row-label { font-size: 17px; font-weight: 400; color: var(--label); flex-shrink: 0; min-width: 0; }
-        .ios-row-label.small { font-size: 15px; }
-        .ios-row-input { flex: 1; background: transparent; border: none; font-family: inherit; font-size: 17px; font-weight: 400; color: var(--label); text-align: right; outline: none; min-width: 0; padding: 0; }
-        .ios-row-input::placeholder { color: var(--label3); }
-        .ios-row-input:focus { color: var(--label); }
+        .gen-btn-wrap {
+          --global--size: 1.1rem;
+          --anim--hover-time: 400ms;
+          --anim--hover-ease: cubic-bezier(0.25, 1, 0.5, 1);
+          position: relative;
+          z-index: 2;
+          border-radius: 999px;
+          background: transparent;
+          transition: all var(--anim--hover-time) var(--anim--hover-ease);
+          width: 100%;
+          height: 54px; 
+        }
 
-        .ios-stacked-label-sm { font-size: 11px; font-weight: 600; color: var(--label2); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 4px; }
-        .ios-stacked-input-sm { background: transparent; border: none; font-family: inherit; font-size: 15px; color: var(--label); outline: none; width: 100%; padding: 0; }
-        .ios-stacked-input-sm::placeholder { color: var(--label3); }
-        .item-card-title { font-size: 13px; font-weight: 600; color: var(--label2); text-transform: uppercase; letter-spacing: 0.5px; }
+        .gen-btn-shadow {
+          --shadow-cuttoff-fix: 2em;
+          position: absolute;
+          width: calc(100% + var(--shadow-cuttoff-fix));
+          height: calc(100% + var(--shadow-cuttoff-fix));
+          top: calc(0% - var(--shadow-cuttoff-fix) / 2);
+          left: calc(0% - var(--shadow-cuttoff-fix) / 2);
+          filter: blur(clamp(2px, 0.125em, 12px));
+          overflow: visible;
+          pointer-events: none;
+        }
 
-        .scroll-area { position: relative; z-index: 2; max-width: 430px; margin: 0 auto; padding: 24px 16px env(safe-area-inset-bottom, 32px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px); }
-        .section-header { font-size: 12px; font-weight: 600; color: var(--label2); letter-spacing: 0.6px; text-transform: uppercase; padding: 0 16px 6px; }
+        .gen-btn-shadow::after { content: ""; position: absolute; z-index: 0; inset: 0; border-radius: 999px; background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1)); width: calc(100% - var(--shadow-cuttoff-fix) - 0.25em); height: calc(100% - var(--shadow-cuttoff-fix) - 0.25em); top: calc(var(--shadow-cuttoff-fix) - 0.5em); left: calc(var(--shadow-cuttoff-fix) - 0.875em); padding: 0.125em; box-sizing: border-box; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; transition: all var(--anim--hover-time) var(--anim--hover-ease); opacity: 1; }
+        .gen-btn-uiverse { --border-width: clamp(1px, 0.0625em, 4px); all: unset; cursor: pointer; position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; pointer-events: auto; z-index: 3; background: linear-gradient(-75deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05)); border-radius: 999px; box-shadow: inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05), inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5), 0 0.25em 0.125em -0.125em rgba(0, 0, 0, 0.2), 0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2), 0 0 0 0 rgba(255, 255, 255, 1); backdrop-filter: blur(clamp(1px, 0.125em, 4px)); transition: all var(--anim--hover-time) var(--anim--hover-ease); color: var(--label); }
+        .gen-btn-uiverse:hover { transform: scale(0.975); backdrop-filter: blur(0.01em); box-shadow: inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05), inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5), 0 0.15em 0.05em -0.1em rgba(0, 0, 0, 0.25), 0 0 0.05em 0.1em inset rgba(255, 255, 255, 0.5), 0 0 0 0 rgba(255, 255, 255, 1); }
+        .gen-btn-span { position: relative; display: block; user-select: none; font-family: "Inter", sans-serif; letter-spacing: -0.05em; font-weight: 600; font-size: var(--global--size); text-shadow: 0em 0.25em 0.05em rgba(0, 0, 0, 0.1); transition: all var(--anim--hover-time) var(--anim--hover-ease); }
+        [data-theme="dark"] .gen-btn-uiverse { color: #fff; }
+        .gen-btn-uiverse:hover .gen-btn-span { text-shadow: 0.025em 0.025em 0.025em rgba(0, 0, 0, 0.12); }
+        .gen-btn-span::after { content: ""; display: block; position: absolute; z-index: 1; width: calc(100% - var(--border-width)); height: calc(100% - var(--border-width)); top: calc(0% + var(--border-width) / 2); left: calc(0% + var(--border-width) / 2); box-sizing: border-box; border-radius: 999px; overflow: clip; background: linear-gradient(var(--angle-2), rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 40% 50%, rgba(255, 255, 255, 0) 55%); z-index: 3; mix-blend-mode: screen; pointer-events: none; background-size: 200% 200%; background-position: 0% 50%; background-repeat: no-repeat; transition: background-position calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease), --angle-2 calc(var(--anim--hover-time) * 1.25) var(--anim--hover-ease); }
+        .gen-btn-uiverse:hover .gen-btn-span::after { background-position: 25% 50%; }
+        .gen-btn-uiverse:active .gen-btn-span::after { background-position: 50% 15%; --angle-2: -15deg; }
+        .gen-btn-uiverse::after { content: ""; position: absolute; z-index: 1; inset: 0; border-radius: 999px; width: calc(100% + var(--border-width)); height: calc(100% + var(--border-width)); top: calc(0% - var(--border-width) / 2); left: calc(0% - var(--border-width) / 2); padding: var(--border-width); box-sizing: border-box; background: conic-gradient(from var(--angle-1) at 50% 50%, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 5% 40%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0) 60% 95%, rgba(0, 0, 0, 0.5)), linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)); mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; transition: all var(--anim--hover-time) var(--anim--hover-ease), --angle-1 500ms ease; box-shadow: inset 0 0 0 calc(var(--border-width) / 2) rgba(255, 255, 255, 0.5); }
+        .gen-btn-uiverse:hover::after { --angle-1: -125deg; }
+        .gen-btn-uiverse:active::after { --angle-1: -75deg; }
+        .gen-btn-wrap:has(button:hover) .gen-btn-shadow { filter: blur(clamp(2px, 0.0625em, 6px)); transition: filter var(--anim--hover-time) var(--anim--hover-ease); }
+        .gen-btn-wrap:has(button:hover) .gen-btn-shadow::after { top: calc(var(--shadow-cuttoff-fix) - 0.875em); opacity: 1; }
+        .gen-btn-wrap:has(button:active) { transform: rotate3d(1, 0, 0, 25deg); }
+        .gen-btn-wrap:has(button:active) button { box-shadow: inset 0 0.125em 0.125em rgba(0, 0, 0, 0.05), inset 0 -0.125em 0.125em rgba(255, 255, 255, 0.5), 0 0.125em 0.125em -0.125em rgba(0, 0, 0, 0.2), 0 0 0.1em 0.25em inset rgba(255, 255, 255, 0.2), 0 0.225em 0.05em 0 rgba(0, 0, 0, 0.05), 0 0.25em 0 0 rgba(255, 255, 255, 0.75), inset 0 0.25em 0.05em 0 rgba(0, 0, 0, 0.15); }
+        .gen-btn-wrap:has(button:active) .gen-btn-shadow { filter: blur(clamp(2px, 0.125em, 12px)); }
+        .gen-btn-wrap:has(button:active) .gen-btn-shadow::after { top: calc(var(--shadow-cuttoff-fix) - 0.5em); opacity: 0.75; }
+        .gen-btn-wrap:has(button:active) span { text-shadow: 0.025em 0.25em 0.05em rgba(0, 0, 0, 0.12); }
 
-        .ios-row:not(:last-child)::after, .ios-stacked-row:not(:last-child)::after, .item-card-header { border-color: var(--separator) !important; }
-        .item-field-cell:not(.no-border-right):nth-child(odd)::after, .item-field-cell:not(:last-child):not(:nth-last-child(2).even-last)::before { background: var(--separator); }
 
-        /* ACTION BUTTONS */
-        .card-action-btn { display: flex; align-items: center; gap: 4px; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 0.5px solid rgba(255, 255, 255, 0.10); border-radius: 50px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--tint); cursor: pointer; transition: opacity 0.15s, background 0.15s, transform 0.1s; }
-        .card-action-btn:active { opacity: 0.6; transform: scale(0.94); }
-
-        .ios-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 0; height: 54px; border-radius: var(--radius-xl); border: 0.5px solid var(--glass-border); font-family: inherit; font-size: 17px; font-weight: 600; cursor: pointer; letter-spacing: -0.2px; transition: opacity 0.15s, transform 0.1s, background 0.2s, box-shadow 0.2s; }
-        .ios-btn:active { transform: scale(0.97); opacity: 0.75; }
-        .ios-btn:disabled { opacity: 0.38; pointer-events: none; }
-
-        .btn-primary { background: var(--tint); color: #fff; border-color: var(--tint); box-shadow: 0 4px 24px rgba(0, 122, 255, 0.30); }
-        [data-theme="dark"] .btn-primary { box-shadow: 0 4px 24px rgba(10, 132, 255, 0.35); }
-        .btn-secondary { background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur)); color: var(--tint); border-color: var(--glass-border); }
+        /* ================================================================
+           OTHER BASE BUTTONS & UI
+           ================================================================ */
         .btn-section { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
         .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        .item-remove-btn { width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: white; border: none; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s, opacity 0.15s; flex-shrink: 0; }
-        .item-remove-btn:active { transform: scale(0.88); opacity: 0.7; }
         .sig-clear-btn { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; border: none; font-size: 11px; font-weight: 700; display: none; align-items: center; justify-content: center; cursor: pointer; z-index: 5; touch-action: manipulation; transition: transform 0.15s; }
         .sig-pad-wrapper.signed .sig-clear-btn { display: flex; }
         .sig-clear-btn:active { transform: scale(0.85); }
@@ -459,7 +301,7 @@
 
         #form-error { background: var(--red); color: #fff; padding: 13px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; text-align: center; margin-top: 12px; display: none; line-height: 1.4; }
         #form-error.show { display: block; }
-        .scanner-controls button { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 0.5px solid rgba(255, 255, 255, 0.10); color: #fff; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 50px; cursor: pointer; font-family: inherit; }
+        .scanner-controls button { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: #fff; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 50px; cursor: pointer; font-family: inherit; }
 
         /* RECEIPT PREVIEW (PRINT) */
         #receipt-wrapper { position: fixed; top: -9999px; left: -9999px; opacity: 0; pointer-events: none; width: 800px; }
@@ -495,11 +337,27 @@
         /* item grid */
         .item-fields-grid { display: grid; grid-template-columns: 1fr 1fr; }
         .item-field-cell { padding: 12px 16px; position: relative; }
-        .item-field-cell:not(.no-border-right):nth-child(odd)::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 0.5px; background: var(--separator); }
-        .item-field-cell:not(:last-child):not(:nth-last-child(2).even-last)::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 0.5px; background: var(--separator); }
+        .item-field-cell:not(.no-border-right):nth-child(odd)::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 1px; background: var(--separator); }
+        .item-field-cell:not(:last-child):not(:nth-last-child(2).even-last)::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: var(--separator); }
         .item-field-cell.full { grid-column: 1 / -1; }
         .item-field-cell.full::after { display: none; }
-        .item-card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 0.5px solid var(--separator); }
+        .item-card-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--separator); }
+
+        .ios-row { display: flex; align-items: center; padding: 0 16px; min-height: 52px; gap: 12px; position: relative; }
+        .ios-row:not(:last-child)::after { content: ''; position: absolute; bottom: 0; left: 16px; right: 0; height: 1px; background: var(--separator); }
+        .ios-row-label { font-size: 16px; font-weight: 400; color: var(--label); flex-shrink: 0; min-width: 0; }
+        .ios-row-label.small { font-size: 15px; }
+        .ios-row-input { flex: 1; background: transparent; border: none; font-family: inherit; font-size: 16px; font-weight: 400; color: var(--label); text-align: right; outline: none; min-width: 0; padding: 0; }
+        .ios-row-input::placeholder { color: var(--label3); }
+        .ios-row-input:focus { color: var(--label); }
+
+        .ios-stacked-label-sm { font-size: 11px; font-weight: 600; color: var(--label2); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 4px; }
+        .ios-stacked-input-sm { background: transparent; border: none; font-family: inherit; font-size: 15px; color: var(--label); outline: none; width: 100%; padding: 0; }
+        .ios-stacked-input-sm::placeholder { color: var(--label3); }
+        .item-card-title { font-size: 13px; font-weight: 600; color: var(--label2); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .scroll-area { position: relative; z-index: 2; max-width: 430px; margin: 0 auto; padding: 16px 16px env(safe-area-inset-bottom, 32px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px); }
+        .section-header { font-size: 12px; font-weight: 600; color: var(--label2); letter-spacing: 0.6px; text-transform: uppercase; padding: 0 16px 6px; }
 
         @media (max-width: 400px) {
             .calendar-popup { width: 290px; padding: 14px 14px 12px; }
@@ -513,9 +371,9 @@
             .ios-row-label { min-width: 160px; }
             .sig-container { display: flex; align-items: stretch; }
             .sig-container .sig-block { flex: 1; border-bottom: none !important; }
-            .sig-container .sig-block:first-child { border-right: 0.5px solid var(--separator); }
+            .sig-container .sig-block:first-child { border-right: 1px solid var(--separator); }
             .btn-section { flex-direction: row; gap: 16px; align-items: center; }
-            .btn-section > button { flex: 1; margin-top: 0; }
+            .btn-section > .gen-btn-wrap { flex: 1; margin-top: 0; }
             .btn-row { flex: 1; margin-top: 0; }
         }
     </style>
@@ -527,19 +385,44 @@
 
     <!-- ===== NAV BAR ===== -->
     <nav class="nav-bar no-print">
-        <div class="nav-inner" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:860px;margin:0 auto;min-height:52px;">
-            <div class="nav-title-block" style="display:flex;flex-direction:column;gap:1px;">
-                <span class="nav-eyebrow" style="font-size:11px;font-weight:500;color:var(--label2);letter-spacing:0.4px;text-transform:uppercase;">Binus Alsut</span>
-                <span class="nav-title" style="font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--label);">Tanda Terima</span>
+        <div class="nav-inner" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;max-width:860px;margin:0 auto;min-height:48px;">
+            <div class="nav-title-block" style="display:flex;flex-direction:column;gap:0px;">
+                <span class="nav-eyebrow" style="font-size:10px;font-weight:500;color:var(--label2);letter-spacing:0.4px;text-transform:uppercase;">Binus Alsut</span>
+                <span class="nav-title" style="font-size:16px;font-weight:600;letter-spacing:-0.3px;color:var(--label);">Tanda Terima</span>
             </div>
-            <div class="nav-actions" style="display:flex;align-items:center;gap:8px;">
-                <button onclick="toggleTheme()" class="theme-pill" id="theme-toggle" title="Toggle tema">
-                    <span class="theme-pill-thumb" id="theme-thumb">🌙</span>
-                    <span class="theme-pill-icons"><span>☀️</span><span></span></span>
-                </button>
-                <button onclick="resetForm()" class="nav-btn nav-btn-icon" title="Reset form" style="width:32px;padding:0;font-size:15px;color:var(--label2);">
-                    ↺
-                </button>
+            
+            <div class="nav-actions" style="display:flex;align-items:center;gap:12px;height:32px;">
+                <!-- UIVERSE CUSTOM SWITCH (SCALED DOWN FIX GHOST SPACE) -->
+                <div style="width: 58px; height: 32px; position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div style="transform: scale(0.3); position: absolute;">
+                        <div class="w-48 aspect-video rounded-xl has-[:checked]:bg-[#3a3347] bg-[#ebe6ef] border-4 border-[#121331]">
+                            <div class="flex h-full w-full px-2 items-center gap-x-2">
+                                <div class="w-6 h-6 flex-shrink-0 rounded-full border-4 border-[#121331]"></div>
+                                <label for="switch" class="has-[:checked]:scale-x-[-1] w-full h-10 border-4 border-[#121331] rounded cursor-pointer">
+                                    <input type="checkbox" id="switch" class="hidden" onchange="toggleTheme()" />
+                                    <div class="w-full h-full bg-[#f24c00] relative">
+                                        <div class="w-0 h-0 z-20 border-l-[24px] border-l-transparent border-r-[24px] border-r-transparent border-t-[20px] border-t-[#121331] relative">
+                                            <div class="w-0 h-0 absolute border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[15px] border-t-[#e44901] -top-5 -left-[18px]"></div>
+                                        </div>
+                                        <div class="w-[24px] h-9 z-10 absolute top-[9px] left-0 bg-[#f24c00] border-r-2 border-b-4 border-[#121331] transform skew-y-[39deg]"></div>
+                                        <div class="w-[25px] h-9 z-10 absolute top-[9px] left-[24px] bg-[#c44002] border-r-4 border-l-2 border-b-4 border-[#121331] transform skew-y-[-39deg]"></div>
+                                    </div>
+                                </label>
+                                <div class="w-6 h-1 flex-shrink-0 bg-[#121331] rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UIVERSE CUSTOM RESET BUTTON (HIDDEN FIX GHOST SPACE) -->
+                <div style="width: 30px; height: 32px; position: relative; display: none; align-items: center; justify-content: center;">
+                    <div style="transform: scale(0.5); position: absolute;">
+                        <button type="button" onclick="resetForm()" class="btn-uiverse-reset" title="Reset form">
+                            <span class="back"></span>
+                            <span class="front">↺</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -587,9 +470,11 @@
             <div class="ios-group" style="margin-bottom:8px;">
                 <div class="card-action-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;">
                     <span class="card-action-label" style="font-size:15px;font-weight:500;color:var(--label);">Tambah Barang</span>
+                    
                     <div class="card-action-btns" style="display:flex;gap:8px;">
-                        <button type="button" onclick="startScanner()" class="card-action-btn">📸 Scan</button>
-                        <button type="button" onclick="addItemRow()" class="card-action-btn">＋ Tambah</button>
+                        <!-- LENFEAR BUTTONS (SCAN & TAMBAH) -->
+                        <button type="button" onclick="startScanner()" class="btn-lenfear btn-lenfear-sm">📸 Scan</button>
+                        <button type="button" onclick="addItemRow()" class="btn-lenfear btn-lenfear-sm">＋ Tambah</button>
                     </div>
                 </div>
             </div>
@@ -607,7 +492,7 @@
             <p class="section-header" style="margin-top:8px;">Tanda Tangan</p>
             <div class="ios-group">
                 <div class="sig-container">
-                    <div class="sig-block" style="padding:16px 16px 14px;border-bottom:0.5px solid var(--separator);">
+                    <div class="sig-block" style="padding:16px 16px 14px;border-bottom:1px solid var(--separator);">
                         <div class="sig-name-label" style="font-size:11px;font-weight:600;color:var(--label2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Diserahkan Oleh</div>
                         <div class="sig-pad-wrapper" id="sig-given-wrapper">
                             <div class="sig-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--label3);pointer-events:none;gap:6px;">✍️ Tanda tangan di sini</div>
@@ -631,12 +516,25 @@
 
             <!-- ACTION BUTTONS -->
             <div class="btn-section">
-                <button type="submit" id="generate-btn" class="ios-btn btn-primary">
-                    <span id="gen-btn-text">Generate Tanda Terima</span>
-                </button>
+                
+                <!-- UIVERSE GENERATE BUTTON -->
+                <div class="gen-btn-wrap">
+                    <div class="gen-btn-shadow"></div>
+                    <button type="submit" id="generate-btn" class="gen-btn-uiverse">
+                        <span class="gen-btn-span" id="gen-btn-text">Generate Tanda Terima</span>
+                    </button>
+                </div>
+
                 <div class="btn-row">
-                    <button type="button" onclick="downloadReceipt()" id="download-btn" class="ios-btn btn-secondary" disabled>⬇ PNG</button>
-                    <button type="button" onclick="downloadDocx()" id="download-docx-btn" class="ios-btn btn-secondary" disabled>📄 DOCX</button>
+                    <!-- LENFEAR DOWNLOAD PNG -->
+                    <button type="button" onclick="downloadReceipt()" id="download-btn" class="btn-lenfear btn-lenfear-lg" disabled>
+                        <span id="download-btn-text">⬇ PNG</span>
+                    </button>
+
+                    <!-- LENFEAR DOWNLOAD DOCX -->
+                    <button type="button" onclick="downloadDocx()" id="download-docx-btn" class="btn-lenfear btn-lenfear-lg" disabled>
+                        <span id="download-docx-text">📄 DOCX</span>
+                    </button>
                 </div>
             </div>
 
@@ -664,7 +562,6 @@
             if (vantaEffect) vantaEffect.destroy();
             const isDark = theme === 'dark';
             
-            // Konfigurasi warnanya disesuaikan biar cocok sama UI Dark/Light Mode
             vantaEffect = VANTA.GLOBE({
                 el: "#vanta-bg",
                 mouseControls: true,
@@ -675,9 +572,9 @@
                 scale: 1.00,
                 scaleMobile: 1.00,
                 size: 0.50,
-                color: isDark ? 0x0a84ff : 0x007aff, // Warna jaring globe
-                color2: isDark ? 0xffffff : 0x1c1c1e, // Warna aksen titik
-                backgroundColor: isDark ? 0x0b0b12 : 0xe8ecf4 // Warna latar belakang
+                color: isDark ? 0x0a84ff : 0x007aff,
+                color2: isDark ? 0xffffff : 0x1c1c1e,
+                backgroundColor: isDark ? 0x0b0b12 : 0xe8ecf4
             });
         }
 
@@ -688,8 +585,10 @@
 
         function updateThemeUI() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            const thumb = document.getElementById('theme-thumb');
-            if (thumb) thumb.textContent = isDark ? '🌙' : '☀️';
+            
+            // Sync status checkbox dengan status isDark (Checked = Dark mode)
+            const themeSwitch = document.getElementById('switch');
+            if (themeSwitch) themeSwitch.checked = isDark;
             
             // Update vanta theme saat UI keganti
             updateVantaTheme(isDark ? 'dark' : 'light');
@@ -941,7 +840,6 @@
         // CUSTOM SELECT – iOS Glass Style (FIXED)
         // ================================================================
         function createCustomSelect(selectElement, options) {
-            // If select already has a wrapper, skip (avoid duplication)
             if (selectElement.parentElement && selectElement.parentElement.classList.contains('custom-select-wrap')) {
                 return;
             }
@@ -953,7 +851,6 @@
             trigger.type = 'button';
             trigger.className = 'custom-select-trigger';
 
-            // Get current selected option label
             const currentVal = selectElement.value;
             const currentOpt = options.find(o => o.value === currentVal);
             const displayText = currentOpt ? currentOpt.label : (options.length > 0 ? options[0].label : 'Pilih');
@@ -963,13 +860,11 @@
                     <span class="sel-arrow">⌵</span>
                 `;
 
-            // Replace select with wrapper
             selectElement.parentNode.replaceChild(wrap, selectElement);
             wrap.appendChild(trigger);
             wrap.appendChild(selectElement);
             selectElement.style.display = 'none';
 
-            // Create dropdown
             const dropdown = document.createElement('div');
             dropdown.className = 'select-dropdown';
             document.body.appendChild(dropdown);
@@ -1065,13 +960,11 @@
                 }
             }, { passive: true });
 
-            // Sync trigger when select changes externally
             selectElement.addEventListener('change', function() {
                 const val = this.value;
                 const label = options.find(o => o.value === val)?.label || val;
                 trigger.querySelector('.sel-text').textContent = label;
                 trigger.querySelector('.sel-text').className = 'sel-text';
-                // Also update dropdown selection if open
                 if (isOpen) {
                     dropdown.querySelectorAll('.sel-option').forEach(b => {
                         b.classList.toggle('selected', b.dataset.value === val);
@@ -1079,7 +972,6 @@
                 }
             });
 
-            // Cleanup
             const observer = new MutationObserver(() => {
                 if (!document.contains(wrap)) {
                     dropdown.remove();
@@ -1436,7 +1328,15 @@
             div.innerHTML = `
                     <div class="item-card-header">
                         <span class="item-card-title">Barang #${idx}</span>
-                        <button type="button" onclick="removeItemRow('${rowId}')" class="item-remove-btn">✕</button>
+                        <!-- UIVERSE DELETE BUTTON -->
+                        <button type="button" onclick="removeItemRow('${rowId}')" class="btn-delete-uiverse">
+                            <span class="text">Hapus</span>
+                            <span class="icon">
+                                <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2C296.3 0 307.4 6.8 312.8 17.7L320 32H416C424.8 32 432 39.2 432 48V80C432 88.8 424.8 96 416 96H32C23.2 96 16 88.8 16 80V48C16 39.2 23.2 32 32 32H128L135.2 17.7zM32 128H416V464C416 490.5 394.5 512 368 512H80C53.5 512 32 490.5 32 464V128z"></path>
+                                </svg>
+                            </span>
+                        </button>
                     </div>
                     <div class="item-fields-grid">
                         <div class="item-field-cell full" style="border-bottom:0.5px solid var(--separator);">
@@ -1472,7 +1372,6 @@
 
             container.appendChild(div);
 
-            // Initialize custom selects
             div.querySelectorAll('.custom-select-replace').forEach(sel => {
                 const opts = Array.from(sel.options).map(o => ({ value: o.value, label: o.text }));
                 createCustomSelect(sel, opts);
@@ -1509,8 +1408,14 @@
             clearSignature('given');
             clearSignature('received');
             document.getElementById('form-error').classList.remove('show');
+            
+            // Re-enable and reset download buttons
             document.getElementById('download-btn').disabled = true;
+            document.getElementById('download-btn-text').innerText = '⬇ PNG';
+            
             document.getElementById('download-docx-btn').disabled = true;
+            document.getElementById('download-docx-text').innerText = '📄 DOCX';
+            
             document.getElementById('gen-btn-text').innerText = 'Generate Tanda Terima';
         }
 
@@ -1637,10 +1542,13 @@
         // ================================================================
         async function downloadReceipt() {
             const btn = document.getElementById('download-btn');
+            const btnText = document.getElementById('download-btn-text');
             const preview = document.getElementById('receipt-preview');
             if (!preview.querySelector('table')) { alert('Generate tanda terima terlebih dahulu!'); return; }
-            btn.innerText = '⏳ ...';
+            
+            btnText.innerText = '⏳ ...';
             btn.disabled = true;
+            
             try {
                 const canvas = await html2canvas(preview, {
                     scale: 2,
@@ -1662,12 +1570,13 @@
                 link.download = `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                btn.innerText = '⬇ PNG';
+                
+                btnText.innerText = '⬇ PNG';
                 btn.disabled = false;
             } catch (err) {
                 console.error(err);
                 alert('Gagal generate gambar.');
-                btn.innerText = '⬇ PNG';
+                btnText.innerText = '⬇ PNG';
                 btn.disabled = false;
             }
         }
@@ -1677,12 +1586,14 @@
         // ================================================================
         async function downloadDocx() {
             const btn = document.getElementById('download-docx-btn');
+            const btnText = document.getElementById('download-docx-text');
+            
             if (typeof docx === 'undefined') { alert('Library DOCX gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
                 return; }
             if (typeof saveAs === 'undefined') { alert('Library FileSaver gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
                 return; }
 
-            btn.innerText = '⏳ ...';
+            btnText.innerText = '⏳ ...';
             btn.disabled = true;
 
             try {
@@ -1691,9 +1602,11 @@
                 const receivedBy = document.getElementById('received-by').value.trim();
                 const receivedId = document.getElementById('received-id').value.trim() || '-';
                 const dateVal = document.getElementById('receipt-date').value;
-                if (!dateVal) { alert('Tanggal belum dipilih!');
-                    btn.innerText = '📄 DOCX';
-                    btn.disabled = false; return; }
+                if (!dateVal) { 
+                    alert('Tanggal belum dipilih!');
+                    btnText.innerText = '📄 DOCX';
+                    btn.disabled = false; return; 
+                }
                 const dateObj = new Date(dateVal + 'T00:00:00');
                 const formattedDate = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit',
                         month: 'long', year: 'numeric' });
@@ -1710,18 +1623,24 @@
                     const status = row.querySelector('.item-status')?.value || 'Distribusi';
                     if (name && qty > 0) items.push({ name, spec, qty, fa, sn, kondisi, status });
                 });
-                if (items.length === 0) { alert('Tidak ada data item!');
-                    btn.innerText = '📄 DOCX';
-                    btn.disabled = false; return; }
+                if (items.length === 0) { 
+                    alert('Tidak ada data item!');
+                    btnText.innerText = '📄 DOCX';
+                    btn.disabled = false; return; 
+                }
 
                 const sigGivenDataUrl = getSignatureDataURL('given');
                 const sigReceivedDataUrl = getSignatureDataURL('received');
-                if (!sigGivenDataUrl) { alert('Tanda tangan "Diserahkan Oleh" wajib diisi!');
-                    btn.innerText = '📄 DOCX';
-                    btn.disabled = false; return; }
-                if (!sigReceivedDataUrl) { alert('Tanda tangan "Diterima Oleh" wajib diisi!');
-                    btn.innerText = '📄 DOCX';
-                    btn.disabled = false; return; }
+                if (!sigGivenDataUrl) { 
+                    alert('Tanda tangan "Diserahkan Oleh" wajib diisi!');
+                    btnText.innerText = '📄 DOCX';
+                    btn.disabled = false; return; 
+                }
+                if (!sigReceivedDataUrl) { 
+                    alert('Tanda tangan "Diterima Oleh" wajib diisi!');
+                    btnText.innerText = '📄 DOCX';
+                    btn.disabled = false; return; 
+                }
 
                 const sigGivenBase64 = sigGivenDataUrl.split(',')[1] || null;
                 const sigReceivedBase64 = sigReceivedDataUrl.split(',')[1] || null;
@@ -1730,13 +1649,15 @@
                     sigGivenBase64, sigReceivedBase64 });
                 saveAs(blob, `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.docx`);
 
-                btn.innerText = '✅ Done!';
-                setTimeout(() => { btn.innerText = '📄 DOCX';
-                    btn.disabled = false; }, 3000);
+                btnText.innerText = '✅ Done!';
+                setTimeout(() => { 
+                    btnText.innerText = '📄 DOCX';
+                    btn.disabled = false; 
+                }, 3000);
             } catch (err) {
                 console.error('Gagal generate DOCX:', err);
                 alert('Terjadi kesalahan saat generate DOCX:\n\n' + (err?.message || err));
-                btn.innerText = '📄 DOCX';
+                btnText.innerText = '📄 DOCX';
                 btn.disabled = false;
             }
         }
@@ -1906,7 +1827,6 @@
             updateThemeUI();
             initForm();
 
-            // Convert any existing custom selects (safety)
             document.querySelectorAll('.custom-select-replace').forEach(sel => {
                 const opts = Array.from(sel.options).map(o => ({ value: o.value, label: o.text }));
                 createCustomSelect(sel, opts);
