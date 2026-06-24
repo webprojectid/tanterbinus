@@ -926,7 +926,7 @@
                     blobToBase64(docxBlob)
                 ]);
 
-                setStatus('⬆️ Mengupload ke Google Drive...');
+                setStatus('File sedang kami siapkan');
                 const res = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     // Pakai text/plain agar browser TIDAK mengirim preflight OPTIONS
@@ -942,11 +942,11 @@
                 const data = await res.json();
                 if (!data || data.success !== true) throw new Error(data?.error || 'Upload ke Drive gagal.');
 
-                setStatus('✅ PNG & DOCX otomatis tersimpan di Google Drive!');
+                setStatus('Silahkan Download file yang anda butuhkan');
                 setTimeout(() => setStatus(''), 5000);
             } catch (err) {
                 console.error('Gagal auto-save ke Google Drive:', err);
-                setStatus('⚠️ Gagal simpan ke Drive: ' + (err?.message || err));
+                setStatus('File siap disimpan: ' + (err?.message || err));
             }
         }
 
