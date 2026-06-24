@@ -13,6 +13,9 @@
     <script src="https://cdn.jsdelivr.net/npm/docx@8.2.3/build/index.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
+    <!-- GOOGLE IDENTITY SERVICES (untuk auto-save ke Google Drive) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <!-- VANTA.JS GLOBE DEPENDENCIES -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
@@ -836,6 +839,8 @@
                         <span id="download-docx-text">📄 DOCX</span>
                     </button>
                 </div>
+
+                <p id="gdrive-status" style="font-size:12px; margin-top:10px; text-align:center; color:var(--label2); min-height:16px;"></p>
             </div>
 
         </form>
@@ -853,6 +858,196 @@
     <!-- JAVASCRIPT                                                   -->
     <!-- ============================================================ -->
     <script>
+        // ================================================================
+        // GOOGLE DRIVE AUTO-SAVE — KONFIGURASI
+        // ================================================================
+        // 1. Buat OAuth Client ID (Web application) di Google Cloud Console
+        //    lalu tempel di sini. Lihat tutorial yang diberikan terpisah.
+        const GOOGLE_DRIVE_CONFIG = {
+            CLIENT_ID: '127528085173-n76v3614lmd6faa7l7ov2a1t23jrqad8.apps.googleusercontent.com',
+            PARENT_FOLDER_NAME: 'Tanda Terima Binus',
+            SCOPES: 'https://www.googleapis.com/auth/drive.file'
+        };
+        let gdriveTokenClient = null;
+        let gdriveAccessToken = null;
+        let gdriveTokenExpiry = 0; // epoch ms
+        let gdriveDailyFolderCache = { date: null, id: null };
+
+        // ================================================================
+        // TIMESTAMP HELPERS — SELALU MENGIKUTI WAKTU JAKARTA (GMT+7)
+        // ================================================================
+        function getJakartaDateParts() {
+            const now = new Date();
+            const parts = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Asia/Jakarta',
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+            }).formatToParts(now);
+            const get = (type) => parts.find(p => p.type === type)?.value;
+            return { year: get('year'), month: get('month'), day: get('day'),
+                hour: get('hour'), minute: get('minute'), second: get('second') };
+        }
+
+        // Format: 2026-06-24_21-15-30 (tanggal_jam-menit-detik, GMT+7 Jakarta)
+        function getJakartaTimestamp() {
+            const p = getJakartaDateParts();
+            return `${p.year}-${p.month}-${p.day}_${p.hour}-${p.minute}-${p.second}`;
+        }
+
+        // Format: 2026-06-24 (dipakai sebagai nama folder harian di Drive)
+        function getJakartaDateKey() {
+            const p = getJakartaDateParts();
+            return `${p.year}-${p.month}-${p.day}`;
+        }
+
+        // ================================================================
+        // GOOGLE DRIVE AUTH
+        // ================================================================
+        function initGoogleDriveAuth() {
+            if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+                console.warn('Google Identity Services belum termuat (cek koneksi/CDN).');
+                return;
+            }
+            if (GOOGLE_DRIVE_CONFIG.CLIENT_ID.startsWith('GANTI_DENGAN')) {
+                console.warn('CLIENT_ID Google Drive belum dikonfigurasi. Auto-save ke Drive dimatikan.');
+                return;
+            }
+            gdriveTokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_DRIVE_CONFIG.CLIENT_ID,
+                scope: GOOGLE_DRIVE_CONFIG.SCOPES,
+                callback: () => {} // diisi ulang per-request lewat ensureDriveToken()
+            });
+        }
+
+        function ensureDriveToken() {
+            return new Promise((resolve, reject) => {
+                if (!gdriveTokenClient) {
+                    reject(new Error('Google Drive belum dikonfigurasi (isi CLIENT_ID terlebih dahulu).'));
+                    return;
+                }
+                const now = Date.now();
+                if (gdriveAccessToken && now < gdriveTokenExpiry) {
+                    resolve(gdriveAccessToken);
+                    return;
+                }
+                gdriveTokenClient.callback = (resp) => {
+                    if (resp && resp.access_token) {
+                        gdriveAccessToken = resp.access_token;
+                        gdriveTokenExpiry = Date.now() + ((resp.expires_in || 3500) * 1000);
+                        resolve(gdriveAccessToken);
+                    } else {
+                        reject(new Error('Gagal mendapatkan akses Google Drive.'));
+                    }
+                };
+                gdriveTokenClient.requestAccessToken({ prompt: '' });
+            });
+        }
+
+        // ================================================================
+        // GOOGLE DRIVE — FOLDER HARIAN OTOMATIS
+        // ================================================================
+        async function driveFindFolder(name, parentId, token) {
+            let q = `mimeType='application/vnd.google-apps.folder' and name='${name.replace(/'/g, "\\'")}' and trashed=false`;
+            if (parentId) q += ` and '${parentId}' in parents`;
+            const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)&spaces=drive`;
+            const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+            if (!res.ok) throw new Error('Gagal mencari folder Drive: ' + (await res.text()));
+            const data = await res.json();
+            return (data.files && data.files.length) ? data.files[0].id : null;
+        }
+
+        async function driveCreateFolder(name, parentId, token) {
+            const metadata = { name, mimeType: 'application/vnd.google-apps.folder' };
+            if (parentId) metadata.parents = [parentId];
+            const res = await fetch('https://www.googleapis.com/drive/v3/files', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(metadata)
+            });
+            if (!res.ok) throw new Error('Gagal membuat folder Drive: ' + (await res.text()));
+            const data = await res.json();
+            return data.id;
+        }
+
+        async function driveFindOrCreateFolder(name, parentId, token) {
+            const existing = await driveFindFolder(name, parentId, token);
+            if (existing) return existing;
+            return await driveCreateFolder(name, parentId, token);
+        }
+
+        // Membuat (atau mengambil) struktur folder:
+        // "Tanda Terima Barang - Binus Alsut" / "2026-06-24"
+        async function getDailyDriveFolderId(token) {
+            const todayKey = getJakartaDateKey();
+            if (gdriveDailyFolderCache.date === todayKey && gdriveDailyFolderCache.id) {
+                return gdriveDailyFolderCache.id;
+            }
+            const parentId = await driveFindOrCreateFolder(GOOGLE_DRIVE_CONFIG.PARENT_FOLDER_NAME, null, token);
+            const dailyId = await driveFindOrCreateFolder(todayKey, parentId, token);
+            gdriveDailyFolderCache = { date: todayKey, id: dailyId };
+            return dailyId;
+        }
+
+        // ================================================================
+        // GOOGLE DRIVE — UPLOAD FILE
+        // ================================================================
+        async function driveUploadFile(blob, filename, mimeType, folderId, token) {
+            const metadata = { name: filename, parents: [folderId] };
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', blob, filename);
+            const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}` },
+                body: form
+            });
+            if (!res.ok) throw new Error('Upload ke Drive gagal: ' + (await res.text()));
+            return await res.json();
+        }
+
+        // ================================================================
+        // AUTO-SAVE PNG + DOCX KE GOOGLE DRIVE (dipanggil otomatis saat Generate)
+        // ================================================================
+        async function autoSaveToGoogleDrive() {
+            const statusEl = document.getElementById('gdrive-status');
+            const setStatus = (msg) => { if (statusEl) statusEl.textContent = msg; };
+
+            if (GOOGLE_DRIVE_CONFIG.CLIENT_ID.startsWith('GANTI_DENGAN')) {
+                setStatus('ℹ️ Auto-save Google Drive belum dikonfigurasi (lihat tutorial).');
+                return;
+            }
+
+            try {
+                setStatus('☁️ Menghubungkan ke Google Drive...');
+                const token = await ensureDriveToken();
+
+                setStatus('🖼️ Menyiapkan PNG...');
+                const pngBlob = await generatePngBlob();
+
+                setStatus('📄 Menyiapkan DOCX...');
+                const docxBlob = await generateDocxBlob();
+
+                setStatus('📁 Menyiapkan folder harian...');
+                const folderId = await getDailyDriveFolderId(token);
+
+                const ts = getJakartaTimestamp();
+
+                setStatus('⬆️ Mengupload PNG ke Drive...');
+                await driveUploadFile(pngBlob, `Tanda_Terima_Barang_${ts}.png`, 'image/png', folderId, token);
+
+                setStatus('⬆️ Mengupload DOCX ke Drive...');
+                await driveUploadFile(docxBlob, `Tanda_Terima_Barang_${ts}.docx`,
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', folderId, token);
+
+                setStatus('✅ PNG & DOCX otomatis tersimpan di Google Drive!');
+                setTimeout(() => setStatus(''), 5000);
+            } catch (err) {
+                console.error('Gagal auto-save ke Google Drive:', err);
+                setStatus('⚠️ Gagal simpan ke Drive: ' + (err?.message || err));
+            }
+        }
+
         // ================================================================
         // VANTA.JS GLOBE INITIATOR
         // ================================================================
@@ -1842,6 +2037,9 @@
             document.getElementById('download-docx-btn').disabled = false;
             document.getElementById('gen-btn-text').innerText = '✅ Siap Download!';
             setTimeout(() => document.getElementById('gen-btn-text').innerText = 'Generate Tanda Terima', 3000);
+
+            // Auto-save PNG + DOCX ke Google Drive (folder harian otomatis)
+            autoSaveToGoogleDrive();
         }
 
         // ================================================================
@@ -1901,58 +2099,111 @@
         }
 
         // ================================================================
-        // DOWNLOAD PNG
+        // GENERATE PNG BLOB (reusable: dipakai download manual & auto-save Drive)
+        // ================================================================
+        async function generatePngBlob() {
+            const preview = document.getElementById('receipt-preview');
+            if (!preview.querySelector('table')) throw new Error('Generate tanda terima terlebih dahulu!');
+
+            const canvas = await html2canvas(preview, {
+                scale: 2,
+                backgroundColor: '#FFFFFF',
+                allowTaint: true,
+                useCORS: true,
+                logging: false,
+                onclone: (clonedDoc) => {
+                    clonedDoc.querySelectorAll('.sig-image').forEach(img => {
+                        img.style.maxHeight = '160px';
+                        img.style.maxWidth = '90%';
+                        img.style.objectFit = 'contain';
+                        img.style.background = 'transparent';
+                        img.style.width = 'auto';
+                    });
+                }
+            });
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+            if (!blob) throw new Error('Gagal membuat PNG dari preview.');
+            return blob;
+        }
+
+        // ================================================================
+        // DOWNLOAD PNG (manual, tombol)
         // ================================================================
         async function downloadReceipt() {
             const btn = document.getElementById('download-btn');
             const btnText = document.getElementById('download-btn-text');
-            const preview = document.getElementById('receipt-preview');
-            if (!preview.querySelector('table')) { alert('Generate tanda terima terlebih dahulu!'); return; }
-            
+
             btnText.innerText = '⏳ ...';
             btn.disabled = true;
-            
+
             try {
-                const canvas = await html2canvas(preview, {
-                    scale: 2,
-                    backgroundColor: '#FFFFFF',
-                    allowTaint: true,
-                    useCORS: true,
-                    logging: false,
-                    onclone: (clonedDoc) => {
-                        clonedDoc.querySelectorAll('.sig-image').forEach(img => {
-                            img.style.maxHeight = '160px';
-                            img.style.maxWidth = '90%';
-                            img.style.objectFit = 'contain';
-                            img.style.background = 'transparent';
-                            img.style.width = 'auto';
-                        });
-                    }
-                });
+                const blob = await generatePngBlob();
                 const link = document.createElement('a');
-                link.download = `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.png`;
-                link.href = canvas.toDataURL('image/png');
+                link.download = `Tanda_Terima_Barang_${getJakartaTimestamp()}.png`;
+                link.href = URL.createObjectURL(blob);
                 link.click();
-                
+                setTimeout(() => URL.revokeObjectURL(link.href), 5000);
+
                 btnText.innerText = '⬇ PNG';
                 btn.disabled = false;
             } catch (err) {
                 console.error(err);
-                alert('Gagal generate gambar.');
+                alert(err?.message || 'Gagal generate gambar.');
                 btnText.innerText = '⬇ PNG';
                 btn.disabled = false;
             }
         }
 
         // ================================================================
-        // DOWNLOAD DOCX
+        // GENERATE DOCX BLOB (reusable: dipakai download manual & auto-save Drive)
+        // ================================================================
+        async function generateDocxBlob() {
+            if (typeof docx === 'undefined') throw new Error('Library DOCX gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
+
+            const givenBy = document.getElementById('given-by').value.trim();
+            const givenId = document.getElementById('given-id').value.trim() || '-';
+            const receivedBy = document.getElementById('received-by').value.trim();
+            const receivedId = document.getElementById('received-id').value.trim() || '-';
+            const dateVal = document.getElementById('receipt-date').value;
+            if (!dateVal) throw new Error('Tanggal belum dipilih!');
+
+            const dateObj = new Date(dateVal + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit',
+                    month: 'long', year: 'numeric' });
+
+            const rows = document.querySelectorAll('#items-container .item-card');
+            const items = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.item-name').value.trim();
+                const spec = row.querySelector('.item-spec').value.trim() || '-';
+                const qty = parseInt(row.querySelector('.item-qty').value) || 0;
+                const fa = row.querySelector('.item-fa').value.trim() || '-';
+                const sn = row.querySelector('.item-sn').value.trim() || '-';
+                const kondisi = row.querySelector('.item-kondisi')?.value || 'Baik';
+                const status = row.querySelector('.item-status')?.value || 'Distribusi';
+                if (name && qty > 0) items.push({ name, spec, qty, fa, sn, kondisi, status });
+            });
+            if (items.length === 0) throw new Error('Tidak ada data item!');
+
+            const sigGivenDataUrl = getSignatureDataURL('given');
+            const sigReceivedDataUrl = getSignatureDataURL('received');
+            if (!sigGivenDataUrl) throw new Error('Tanda tangan "Diserahkan Oleh" wajib diisi!');
+            if (!sigReceivedDataUrl) throw new Error('Tanda tangan "Diterima Oleh" wajib diisi!');
+
+            const sigGivenBase64 = sigGivenDataUrl.split(',')[1] || null;
+            const sigReceivedBase64 = sigReceivedDataUrl.split(',')[1] || null;
+
+            return await buildReceiptDocxBlob({ givenBy, givenId, receivedBy, receivedId, formattedDate, items,
+                sigGivenBase64, sigReceivedBase64 });
+        }
+
+        // ================================================================
+        // DOWNLOAD DOCX (manual, tombol)
         // ================================================================
         async function downloadDocx() {
             const btn = document.getElementById('download-docx-btn');
             const btnText = document.getElementById('download-docx-text');
-            
-            if (typeof docx === 'undefined') { alert('Library DOCX gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
-                return; }
+
             if (typeof saveAs === 'undefined') { alert('Library FileSaver gagal dimuat dari CDN. Refresh halaman dan coba lagi.');
                 return; }
 
@@ -1960,57 +2211,8 @@
             btn.disabled = true;
 
             try {
-                const givenBy = document.getElementById('given-by').value.trim();
-                const givenId = document.getElementById('given-id').value.trim() || '-';
-                const receivedBy = document.getElementById('received-by').value.trim();
-                const receivedId = document.getElementById('received-id').value.trim() || '-';
-                const dateVal = document.getElementById('receipt-date').value;
-                if (!dateVal) { 
-                    alert('Tanggal belum dipilih!');
-                    btnText.innerText = '📄 DOCX';
-                    btn.disabled = false; return; 
-                }
-                const dateObj = new Date(dateVal + 'T00:00:00');
-                const formattedDate = dateObj.toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'id-ID', { day: '2-digit',
-                        month: 'long', year: 'numeric' });
-
-                const rows = document.querySelectorAll('#items-container .item-card');
-                const items = [];
-                rows.forEach(row => {
-                    const name = row.querySelector('.item-name').value.trim();
-                    const spec = row.querySelector('.item-spec').value.trim() || '-';
-                    const qty = parseInt(row.querySelector('.item-qty').value) || 0;
-                    const fa = row.querySelector('.item-fa').value.trim() || '-';
-                    const sn = row.querySelector('.item-sn').value.trim() || '-';
-                    const kondisi = row.querySelector('.item-kondisi')?.value || 'Baik';
-                    const status = row.querySelector('.item-status')?.value || 'Distribusi';
-                    if (name && qty > 0) items.push({ name, spec, qty, fa, sn, kondisi, status });
-                });
-                if (items.length === 0) { 
-                    alert('Tidak ada data item!');
-                    btnText.innerText = '📄 DOCX';
-                    btn.disabled = false; return; 
-                }
-
-                const sigGivenDataUrl = getSignatureDataURL('given');
-                const sigReceivedDataUrl = getSignatureDataURL('received');
-                if (!sigGivenDataUrl) { 
-                    alert('Tanda tangan "Diserahkan Oleh" wajib diisi!');
-                    btnText.innerText = '📄 DOCX';
-                    btn.disabled = false; return; 
-                }
-                if (!sigReceivedDataUrl) { 
-                    alert('Tanda tangan "Diterima Oleh" wajib diisi!');
-                    btnText.innerText = '📄 DOCX';
-                    btn.disabled = false; return; 
-                }
-
-                const sigGivenBase64 = sigGivenDataUrl.split(',')[1] || null;
-                const sigReceivedBase64 = sigReceivedDataUrl.split(',')[1] || null;
-
-                const blob = await buildReceiptDocxBlob({ givenBy, givenId, receivedBy, receivedId, formattedDate, items,
-                    sigGivenBase64, sigReceivedBase64 });
-                saveAs(blob, `Tanda_Terima_Barang_${new Date().toISOString().slice(0,10)}.docx`);
+                const blob = await generateDocxBlob();
+                saveAs(blob, `Tanda_Terima_Barang_${getJakartaTimestamp()}.docx`);
 
                 btnText.innerText = '✅ Done!';
                 setTimeout(() => { 
@@ -2189,6 +2391,7 @@
             if (savedLang) currentLang = savedLang;
             updateThemeUI();
             initForm();
+            initGoogleDriveAuth();
 
             // Initialize any existing custom selects
             document.querySelectorAll('.custom-select-replace').forEach(sel => {
