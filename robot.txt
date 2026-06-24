@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://webprojectid.github.io/tanterbinus/sitemap.xml
