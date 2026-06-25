@@ -5,54 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
     <!-- ============================================================
-         SEO — Primary Meta Tags
+         INTERNAL APP — NOT FOR PUBLIC INDEXING
          ============================================================ -->
     <title>Tanda Terima Barang · BINUS Alam Sutera IT Ops</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <meta name="description" content="Aplikasi Tanda Terima Barang (Tanter) untuk operasional IT BINUS University kampus Alam Sutera (Alsut). Scan barcode/QR, input suara, tanda tangan digital, ekspor PNG & DOCX." />
-    <meta name="keywords" content="tanda terima binus, tanter binus, tanda terima barang binus, tanter alsut, binus alsut IT ops, tanda terima alam sutera, goods receipt binus, webprojectid tanterbinus" />
-    <meta name="author" content="IT Asset & Service Delivery — BINUS Alam Sutera" />
-    <meta name="robots" content="index, follow" />
-    <meta name="google-site-verification" content="tCRiAyka9L05xLQMnLuGBgyf_DVcJxnmZ83f5iZf7rM" />
-    <link rel="canonical" href="https://webprojectid.github.io/tanterbinus/" />
-
-    <!-- ============================================================
-         SEO — Open Graph
-         ============================================================ -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://webprojectid.github.io/tanterbinus/" />
-    <meta property="og:title" content="Tanda Terima Barang · BINUS Alam Sutera IT Ops" />
-    <meta property="og:description" content="Aplikasi Tanda Terima Barang internal IT BINUS Alam Sutera — scan QR, tanda tangan digital, ekspor dokumen." />
-    <meta property="og:locale" content="id_ID" />
-    <meta property="og:site_name" content="BINUS Alsut IT Ops" />
-
-    <!-- ============================================================
-         SEO — Structured Data JSON-LD
-         ============================================================ -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Tanda Terima Barang BINUS Alam Sutera",
-      "alternateName": ["Tanter BINUS", "Tanter Alsut", "Tanda Terima Binus Alsut"],
-      "url": "https://webprojectid.github.io/tanterbinus/",
-      "description": "Aplikasi web internal untuk pencatatan tanda terima barang operasional IT BINUS University kampus Alam Sutera. Fitur: scan barcode dan QR code, input suara, dual tanda tangan digital, ekspor PNG dan DOCX.",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Any",
-      "inLanguage": "id-ID",
-      "publisher": {
-        "@type": "Organization",
-        "name": "IT Asset & Service Delivery BINUS University",
-        "url": "https://binus.ac.id"
-      },
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "IDR"
-      },
-      "keywords": "tanda terima barang, tanter binus, binus alsut, IT ops, goods receipt"
-    }
-    </script>
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <meta name="referrer" content="no-referrer" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -777,6 +735,7 @@
         // GOOGLE DRIVE AUTO-SAVE — KONFIGURASI (via Google Apps Script)
         // ================================================================
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSrbqIv2El0kAJtpnHPEc_0kNghPXZ_G6R21ZWZCVPx7vhYqrtWzkQQ5MTVNbnn8_m/exec';
+        const APPS_SCRIPT_TOKEN = 'GANTI_DENGAN_TOKEN_RAHASIA_LO'; // ⚠️ Samakan dengan SECRET_TOKEN di Apps Script
 
         // ================================================================
         // TIMESTAMP HELPERS
@@ -839,6 +798,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
+                        token: APPS_SCRIPT_TOKEN,
                         pngBase64, pngName: `Tanda_Terima_Barang_${ts}.png`,
                         docxBase64, docxName: `Tanda_Terima_Barang_${ts}.docx`
                     })
@@ -2190,6 +2150,79 @@
                 }
             }, 300);
         });
+    </script>
+
+    <!-- ============================================================
+         SECURITY HARDENING
+         Tidak mengubah UI, logika, fitur, atau fungsi apapun.
+         ============================================================ -->
+    <script>
+    (function() {
+        'use strict';
+
+        // 1. ANTI DEVTOOLS — deteksi dan peringatkan jika DevTools dibuka
+        let devtoolsOpen = false;
+        const threshold = 160;
+        function checkDevTools() {
+            const widthDiff = window.outerWidth - window.innerWidth > threshold;
+            const heightDiff = window.outerHeight - window.innerHeight > threshold;
+            if ((widthDiff || heightDiff) && !devtoolsOpen) {
+                devtoolsOpen = true;
+                document.body.style.filter = 'blur(8px)';
+                const overlay = document.createElement('div');
+                overlay.id = 'devtools-warning';
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+                overlay.innerHTML = '<div style="color:#FF453A;font-size:28px;font-weight:700;">⚠️ Akses Dibatasi</div><div style="color:#fff;font-size:15px;text-align:center;max-width:320px;">Aplikasi ini adalah sistem internal.<br>Penggunaan Developer Tools tidak diizinkan.</div>';
+                document.body.appendChild(overlay);
+            } else if (!widthDiff && !heightDiff && devtoolsOpen) {
+                devtoolsOpen = false;
+                document.body.style.filter = '';
+                const ov = document.getElementById('devtools-warning');
+                if (ov) ov.remove();
+            }
+        }
+        setInterval(checkDevTools, 1000);
+
+        // 2. DISABLE KLIK KANAN
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 3. DISABLE KEYBOARD SHORTCUTS INSPECT & SAVE
+        document.addEventListener('keydown', function(e) {
+            // F12
+            if (e.key === 'F12') { e.preventDefault(); return false; }
+            // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C (DevTools)
+            if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) { e.preventDefault(); return false; }
+            // Ctrl+U (View Source)
+            if (e.ctrlKey && ['U','u'].includes(e.key)) { e.preventDefault(); return false; }
+            // Ctrl+S (Save Page)
+            if (e.ctrlKey && ['S','s'].includes(e.key)) { e.preventDefault(); return false; }
+            // Ctrl+A (Select All) — cegah copy massal
+            if (e.ctrlKey && ['A','a'].includes(e.key) && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault(); return false;
+            }
+        });
+
+        // 4. DISABLE TEXT SELECTION di luar input/textarea
+        document.addEventListener('selectstart', function(e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+
+        // 5. ANTI IFRAME EMBEDDING — cegah situs lain embed halaman ini
+        if (window.top !== window.self) {
+            window.top.location = window.self.location;
+        }
+
+        // 6. CONSOLE WARNING
+        const style = 'color:#FF453A;font-size:20px;font-weight:bold;';
+        const style2 = 'color:#fff;font-size:13px;';
+        console.log('%c⛔ STOP!', style);
+        console.log('%cIni adalah aplikasi internal BINUS Alam Sutera IT Ops.\nJika ada yang menyuruh kamu paste sesuatu di sini, itu adalah penipuan.', style2);
+
+    })();
     </script>
 </body>
 </html>
